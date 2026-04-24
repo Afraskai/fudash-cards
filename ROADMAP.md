@@ -49,14 +49,6 @@ Umgesetzt:
 - `info.md` absichtlich ausgelassen (RENDER_README vermeidet
   Doppelpflege).
 
-**Nachfolgender Rollout**:
-1. Repo `Afraskai/fudash-cards` auf GitHub anlegen (public).
-2. Lokalen Stand pushen.
-3. `git tag v0.9.0 && git push origin v0.9.0` → Workflow erzeugt
-   Release automatisch.
-4. Repo in HACS als „Benutzerdefiniertes Repository" (Typ
-   *Dashboard*) hinzufügen.
-
 ---
 
 ### 3. Mehrsprachigkeit
