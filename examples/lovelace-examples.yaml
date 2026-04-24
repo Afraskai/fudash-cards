@@ -1,0 +1,158 @@
+# FuDash Cards - Beispielkonfigurationen
+# Einfach Abschnitte in den Lovelace-YAML-Editor eines Dashboards kopieren.
+
+# ---------------------------------------------------------------------------
+# 1) Bar-Card: aktuelle Leistung (Solar / Hauslast / Netzbezug) in Watt
+# ---------------------------------------------------------------------------
+- type: custom:fudash-bar-card
+  title: Energie aktuell
+  segments: 40
+  gap: 2
+  height: 28
+  animate: true
+  entities:
+    - entity: sensor.solar_power
+      name: Solar
+      max: 8000
+      color: success
+    - entity: sensor.house_load
+      name: Hauslast
+      max: 8000
+      warn: 4000
+      crit: 6500
+    - entity: sensor.grid_power
+      name: Netzbezug
+      max: 6000
+      warn: 2000
+      crit: 4000
+
+# ---------------------------------------------------------------------------
+# 2) Bar-Card: Tagesenergie in kWh
+# ---------------------------------------------------------------------------
+- type: custom:fudash-bar-card
+  title: Energie heute
+  segments: 30
+  entities:
+    - entity: sensor.solar_energy_today
+      name: Solarertrag
+      max: 60
+      color: success
+    - entity: sensor.house_energy_today
+      name: Verbrauch
+      max: 40
+      warn: 25
+      crit: 35
+    - entity: sensor.grid_import_today
+      name: Netzbezug
+      max: 30
+      warn: 10
+      crit: 20
+
+# ---------------------------------------------------------------------------
+# 3) Gauge-Card: Hauslast mit Warn/Krit-Schwellen
+# ---------------------------------------------------------------------------
+- type: custom:fudash-gauge-card
+  entity: sensor.house_load
+  name: Hauslast
+  min: 0
+  max: 8000
+  warn: 4000
+  crit: 6500
+  size: 200
+
+# ---------------------------------------------------------------------------
+# 4) Gauge-Card: Solarleistung monochrom gruen
+# ---------------------------------------------------------------------------
+- type: custom:fudash-gauge-card
+  entity: sensor.solar_power
+  name: Solar
+  min: 0
+  max: 8000
+  color: success
+  size: 200
+
+# ---------------------------------------------------------------------------
+# 5) Gauge-Card: mit Dreieck-Marker
+# ---------------------------------------------------------------------------
+- type: custom:fudash-gauge-card
+  entity: sensor.grid_power
+  name: Netzbezug
+  min: 0
+  max: 6000
+  warn: 2000
+  crit: 4000
+  needle: true
+  size: 220
+
+# ---------------------------------------------------------------------------
+# 6) Donut-Card: Aktueller Strommix (Solar / Hauslast / Batterie)
+# ---------------------------------------------------------------------------
+- type: custom:fudash-donut-card
+  title: Strommix jetzt
+  size: 220
+  inner_radius: 65
+  show_legend: true
+  show_percent: true
+  center_label: Gesamt
+  entities:
+    - entity: sensor.solarleistung_total
+      name: Solar
+      color: indigo
+    - entity: sensor.load_power
+      name: Hauslast
+      color: amber
+    - entity: sensor.battery_discharging_power
+      name: Batterie
+      color: teal
+
+# ---------------------------------------------------------------------------
+# 7) Donut-Card: kompakter Pie ohne Legende
+# ---------------------------------------------------------------------------
+- type: custom:fudash-donut-card
+  size: 160
+  inner_radius: 0
+  show_total: true
+  show_legend: false
+  entities:
+    - entity: sensor.living_room_temperature
+      name: Wohnen
+      color: red
+    - entity: sensor.bedroom_temperature
+      name: Schlafen
+      color: indigo
+    - entity: sensor.kitchen_temperature
+      name: Kueche
+      color: green
+
+# ---------------------------------------------------------------------------
+# 8) Stat-Card: KPI-Reihe oben im Dashboard (3 Sensoren nebeneinander)
+# ---------------------------------------------------------------------------
+- type: horizontal-stack
+  cards:
+    - type: custom:fudash-stat-card
+      entity: sensor.solarleistung_total
+      name: Solar
+      color: indigo
+      hours: 24
+    - type: custom:fudash-stat-card
+      entity: sensor.load_power
+      name: Hauslast
+      color: amber
+      hours: 24
+    - type: custom:fudash-stat-card
+      entity: sensor.battery_soc
+      name: Batterie
+      unit: "%"
+      color: teal
+      hours: 24
+
+# ---------------------------------------------------------------------------
+# 9) Stat-Card: kompakt ohne Sparkline (nur Zahl + Delta)
+# ---------------------------------------------------------------------------
+- type: custom:fudash-stat-card
+  entity: sensor.grid_import_power
+  name: Netzbezug
+  color: red
+  show_trend: false
+  show_delta: true
+  hours: 1

@@ -1,0 +1,59 @@
+name: Release
+
+# Ausloeser: Push eines Version-Tags im Schema v*, z. B. v0.9.0.
+# Erzeugt ein GitHub-Release mit
+#   - Changelog-Auszug fuer genau diese Version als Release-Notes
+#   - dist/fudash-cards.js als Asset (exakt der Dateiname, den HACS erwartet)
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build dist/fudash-cards.js
+        run: ./build.sh
+
+      - name: Extract version from tag
+        id: meta
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          version="${tag#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog section for this version
+        id: changelog
+        run: |
+          version="${{ steps.meta.outputs.version }}"
+          # Schneidet den Abschnitt zwischen '## [<version>]' und der naechsten '## '-Ueberschrift aus.
+          awk -v ver="$version" '
+            $0 ~ "^## \\[" ver "\\]" { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > RELEASE_NOTES.md
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "Kein Changelog-Abschnitt fuer Version $version gefunden." >&2
+            echo "Release wird trotzdem erstellt, mit generischem Text." >&2
+            echo "Siehe CHANGELOG.md." > RELEASE_NOTES.md
+          fi
+          echo "---"
+          cat RELEASE_NOTES.md
+          echo "---"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.tag }}
+          body_path: RELEASE_NOTES.md
+          files: dist/fudash-cards.js
+          fail_on_unmatched_files: true

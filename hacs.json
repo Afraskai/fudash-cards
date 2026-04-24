@@ -1,0 +1,7 @@
+{
+  "name": "FuDash Cards",
+  "render_readme": true,
+  "filename": "fudash-cards.js",
+  "content_in_root": false,
+  "homeassistant": "2024.8.0"
+}
