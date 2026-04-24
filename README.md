@@ -24,7 +24,7 @@ Theme (hell/dunkel, Community-Themes) ein, als wären sie Standard.
 
 1. In HACS: **Frontend → drei Punkte oben rechts → Benutzerdefinierte
    Repositories**.
-2. **Repository** `https://github.com/florre/fudash-cards` hinzufügen,
+2. **Repository** `https://github.com/Afraskai/fudash-cards` hinzufügen,
    Typ **Dashboard**.
 3. **FuDash Cards** im HACS-Frontend-Store suchen → **Herunterladen**.
 4. Home Assistant neu laden (Browser-Cache leeren, Strg+F5).

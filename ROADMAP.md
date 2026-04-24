@@ -50,7 +50,7 @@ Umgesetzt:
   Doppelpflege).
 
 **Nachfolgender Rollout**:
-1. Repo `florre/fudash-cards` auf GitHub anlegen (public).
+1. Repo `Afraskai/fudash-cards` auf GitHub anlegen (public).
 2. Lokalen Stand pushen.
 3. `git tag v0.9.0 && git push origin v0.9.0` → Workflow erzeugt
    Release automatisch.
@@ -123,7 +123,7 @@ Featureset.
 
 ## Offene Entscheidungen
 
-- [x] **GitHub-Repo-Name**: `florre/fudash-cards` (festgelegt, v0.9.0).
+- [x] **GitHub-Repo-Name**: `Afraskai/fudash-cards` (festgelegt, v0.9.0).
 - [x] **License**: `LICENSE`-Datei (MIT) ist bereits im Repo vorhanden.
 - [x] **Minimale HA-Version**: `2024.8.0` (in `hacs.json` gesetzt).
 
