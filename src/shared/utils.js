@@ -3,7 +3,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.9.0";
+FuDash.VERSION = "0.9.1";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {

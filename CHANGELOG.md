@@ -4,6 +4,14 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.9.1] – 2026-04-24
+
+### Geändert
+- **README**: Hero-Bild (`docs/fudash.jpg`) eingebunden, damit der
+  HACS-Store und GitHub eine Vorschau zeigen.
+- Absolute `raw.githubusercontent.com`-URL benutzt, weil HACS
+  relative Bildpfade in der Store-Ansicht nicht korrekt aufloest.
+
 ## [0.9.0] – 2026-04-24
 
 ### Hinzugefügt

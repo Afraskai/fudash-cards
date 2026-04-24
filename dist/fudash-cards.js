@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-04-24T09:24:36Z
+ *  Built: 2026-04-24T10:59:14Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -12,7 +12,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.9.0";
+FuDash.VERSION = "0.9.1";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {
