@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-04-24T10:59:14Z
+ *  Built: 2026-04-24T14:20:25Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -2020,6 +2020,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       hours: 24,
       show_trend: true,
       show_delta: true,
+      show_stats: true,
       chart_type: "bar",
       show_type_toggle: true,
       bar_width: 3,
@@ -2093,7 +2094,11 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
     if (this._refreshTimer) clearInterval(this._refreshTimer);
     if (!this._config) return;
     // Nur laden, wenn Trend oder Delta gebraucht werden.
-    if (this._config.show_trend === false && this._config.show_delta === false) {
+    if (
+      this._config.show_trend === false &&
+      this._config.show_delta === false &&
+      this._config.show_stats === false
+    ) {
       return;
     }
     const sec = Math.max(30, Number(this._config.refresh_interval) || 120);
@@ -2124,6 +2129,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
     const c = this._config;
     const showTrend = c.show_trend !== false;
     const showDelta = c.show_delta !== false;
+    const showStats = c.show_stats !== false;
     const showToggle = showTrend && c.show_type_toggle !== false;
     this.shadowRoot.innerHTML = `
       <style>${FuDash.sharedStyles}${this._styles()}</style>
@@ -2150,6 +2156,15 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
           <span class="value"></span><span class="unit"></span>
         </div>
         ${showTrend ? `<svg class="spark" preserveAspectRatio="none"></svg>` : ""}
+        ${
+          showStats
+            ? `<div class="stats" hidden>
+                 <div class="stat" data-kind="min"><span class="stat-label">Min</span><span class="stat-value"></span></div>
+                 <div class="stat" data-kind="avg"><span class="stat-label">\u00D8</span><span class="stat-value"></span></div>
+                 <div class="stat" data-kind="max"><span class="stat-label">Max</span><span class="stat-value"></span></div>
+               </div>`
+            : ""
+        }
       </ha-card>
     `;
     this._rendered = true;
@@ -2315,6 +2330,40 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       .spark-area  { fill: ${color}; opacity: 0.18; stroke: none; }
       .spark-dot   { fill: ${color}; stroke: var(--ha-card-background, var(--card-background-color, #1c1c1c)); stroke-width: 2; }
       .spark-bar   { fill: ${color}; stroke: none; }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        margin-top: 4px;
+        padding-top: 6px;
+        border-top: 1px solid color-mix(in srgb, var(--primary-text-color) 8%, transparent);
+      }
+      .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+        min-width: 0;
+      }
+      .stat-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--fudash-muted);
+      }
+      .stat-value {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--primary-text-color);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
+      .stat[data-kind="min"] .stat-value { color: var(--info-color, #0288d1); }
+      .stat[data-kind="max"] .stat-value { color: var(--warning-color, #ed6c02); }
     `;
   }
 
@@ -2364,12 +2413,19 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
   async _fetchAndDraw() {
     if (!this._hass || !this._config) return;
     const c = this._config;
-    if (c.show_trend === false && c.show_delta === false) return;
+    if (
+      c.show_trend === false &&
+      c.show_delta === false &&
+      c.show_stats === false
+    ) {
+      return;
+    }
     const hours = Math.max(1, Math.min(168, Number(c.hours) || 24));
     const key = `${hours}|${c.entity}`;
     if (this._lastFetchKey === key && this._seriesData) {
       this._drawSparkline();
       this._updateDelta();
+      this._updateStats();
       return;
     }
     this._lastFetchKey = key;
@@ -2377,6 +2433,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       this._seriesData = await FuDash.fetchSeries(this._hass, c.entity, hours);
       this._drawSparkline();
       this._updateDelta();
+      this._updateStats();
     } catch (err) {
       console.warn("FuDash: Stat-Card fetch fehlgeschlagen", err);
     }
@@ -2531,6 +2588,48 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
     el.title = `Vergleich zum Wert vor ${this._config.hours || 24}\u202Fh`;
     el.hidden = false;
   }
+
+  // Min/Mittelwert/Max ueber den gewaehlten Zeitraum. Einbezogen wird
+  // auch der aktuelle Live-Wert, damit die Anzeige mit der Sparkline
+  // konsistent ist (siehe _drawSparkline).
+  _updateStats() {
+    if (this._config.show_stats === false) return;
+    const box = this.shadowRoot.querySelector(".stats");
+    if (!box) return;
+    const data = this._seriesData || [];
+    const values = [];
+    for (const p of data) {
+      if (Number.isFinite(p.v)) values.push(p.v);
+    }
+    if (Number.isFinite(this._currentValue)) values.push(this._currentValue);
+    if (values.length < 2) {
+      box.hidden = true;
+      return;
+    }
+    let min = Infinity;
+    let max = -Infinity;
+    let sum = 0;
+    for (const v of values) {
+      if (v < min) min = v;
+      if (v > max) max = v;
+      sum += v;
+    }
+    const avg = sum / values.length;
+    const unit = this.shadowRoot.querySelector(".unit")?.textContent || "";
+    const fmt = (v) =>
+      FuDash.formatNumber(this._hass, v, this._numberFormatOpts(v));
+    const setStat = (kind, value, title) => {
+      const el = box.querySelector(`.stat[data-kind="${kind}"] .stat-value`);
+      if (!el) return;
+      el.textContent = `${fmt(value)}${unit}`;
+      el.parentElement.title = title;
+    };
+    const hours = this._config.hours || 24;
+    setStat("min", min, `Minimum der letzten ${hours}\u202Fh`);
+    setStat("avg", avg, `Mittelwert der letzten ${hours}\u202Fh`);
+    setStat("max", max, `Maximum der letzten ${hours}\u202Fh`);
+    box.hidden = false;
+  }
 };
 
 // ===== src/stat-card/fudash-stat-card-editor.js =====
@@ -2587,6 +2686,7 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         decimals: "Nachkommastellen (0-6, leer = auto)",
         show_trend: "Sparkline anzeigen",
         show_delta: "Delta-Anzeige",
+        show_stats: "Min/\u00D8/Max anzeigen",
         chart_type: "Sparkline-Darstellung (Start-Typ)",
         show_type_toggle: "Umschalter Linie/Balken anzeigen",
         bar_width: "Balkenbreite (px)",
@@ -2628,6 +2728,7 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         },
         { name: "show_trend", default: true, selector: { boolean: {} } },
         { name: "show_delta", default: true, selector: { boolean: {} } },
+        { name: "show_stats", default: true, selector: { boolean: {} } },
         {
           name: "color",
           default: "primary",

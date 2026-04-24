@@ -51,6 +51,7 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         decimals: "Nachkommastellen (0-6, leer = auto)",
         show_trend: "Sparkline anzeigen",
         show_delta: "Delta-Anzeige",
+        show_stats: "Min/\u00D8/Max anzeigen",
         chart_type: "Sparkline-Darstellung (Start-Typ)",
         show_type_toggle: "Umschalter Linie/Balken anzeigen",
         bar_width: "Balkenbreite (px)",
@@ -92,6 +93,7 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         },
         { name: "show_trend", default: true, selector: { boolean: {} } },
         { name: "show_delta", default: true, selector: { boolean: {} } },
+        { name: "show_stats", default: true, selector: { boolean: {} } },
         {
           name: "color",
           default: "primary",
