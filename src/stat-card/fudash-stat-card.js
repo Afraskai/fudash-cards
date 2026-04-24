@@ -160,9 +160,11 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
         ${
           showStats
             ? `<div class="stats" hidden>
-                 <div class="stat" data-kind="min"><span class="stat-label">Min</span><span class="stat-value"></span></div>
-                 <div class="stat" data-kind="avg"><span class="stat-label">\u00D8</span><span class="stat-value"></span></div>
-                 <div class="stat" data-kind="max"><span class="stat-label">Max</span><span class="stat-value"></span></div>
+                 <span class="stat" data-kind="min"><span class="stat-label">min</span><span class="stat-value"></span></span>
+                 <span class="stat-sep" aria-hidden="true">\u00B7</span>
+                 <span class="stat" data-kind="avg"><span class="stat-label">\u00F8</span><span class="stat-value"></span></span>
+                 <span class="stat-sep" aria-hidden="true">\u00B7</span>
+                 <span class="stat" data-kind="max"><span class="stat-label">max</span><span class="stat-value"></span></span>
                </div>`
             : ""
         }
@@ -332,39 +334,36 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       .spark-dot   { fill: ${color}; stroke: var(--ha-card-background, var(--card-background-color, #1c1c1c)); stroke-width: 2; }
       .spark-bar   { fill: ${color}; stroke: none; }
       .stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        gap: 4px 10px;
         margin-top: 4px;
-        padding-top: 6px;
-        border-top: 1px solid color-mix(in srgb, var(--primary-text-color) 8%, transparent);
+        font-size: 0.9rem;
+        line-height: 1.25;
       }
       .stat {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1px;
+        display: inline-flex;
+        align-items: baseline;
+        gap: 5px;
         min-width: 0;
       }
       .stat-label {
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 500;
         color: var(--fudash-muted);
       }
       .stat-value {
-        font-size: 0.8rem;
         font-weight: 600;
         color: var(--primary-text-color);
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
       }
-      .stat[data-kind="min"] .stat-value { color: var(--info-color, #0288d1); }
-      .stat[data-kind="max"] .stat-value { color: var(--warning-color, #ed6c02); }
+      .stat-sep {
+        color: var(--fudash-muted);
+        opacity: 0.6;
+      }
     `;
   }
 
@@ -616,14 +615,16 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       sum += v;
     }
     const avg = sum / values.length;
+    // Einheit bewusst weglassen - die grosse Zahl oben zeigt sie bereits.
+    // Das haelt den Footer einzeilig und entlastet die Augen.
     const unit = this.shadowRoot.querySelector(".unit")?.textContent || "";
     const fmt = (v) =>
       FuDash.formatNumber(this._hass, v, this._numberFormatOpts(v));
     const setStat = (kind, value, title) => {
       const el = box.querySelector(`.stat[data-kind="${kind}"] .stat-value`);
       if (!el) return;
-      el.textContent = `${fmt(value)}${unit}`;
-      el.parentElement.title = title;
+      el.textContent = fmt(value);
+      el.parentElement.title = `${title}: ${fmt(value)}${unit}`;
     };
     const hours = this._config.hours || 24;
     setStat("min", min, `Minimum der letzten ${hours}\u202Fh`);
