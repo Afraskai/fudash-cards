@@ -4,6 +4,17 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.10.0] – 2026-04-24
+
+### Hinzugefügt
+- **Stat-Card**: Neue optionale Min/Ø/Max-Anzeige ueber den konfigurierten
+  Zeitraum (`hours`). Darstellung als dezenter, einzeiliger Footer unter
+  der Sparkline im Format `min · ø · max`. Werte werden im selben
+  Zahlenformat wie der Hauptwert ausgegeben; Tooltip zeigt den vollen
+  Wert inkl. Einheit und Zeitraum.
+- Neue Config-Option `show_stats` (Default `true`) und passender Schalter
+  im Visual-Editor.
+
 ## [0.9.1] – 2026-04-24
 
 ### Geändert
