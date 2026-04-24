@@ -1,5 +1,7 @@
 # FuDash Cards
 
+![FuDash Cards – Vorschau](docs/fudash.jpg)
+
 Moderne, im **Material-3-Stil** gehaltene Custom-Cards für Home Assistant.
 Aktuell enthaltene Karten:
 
