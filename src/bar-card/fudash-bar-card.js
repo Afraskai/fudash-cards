@@ -8,7 +8,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       .filter((e) => typeof e === "string" && e.startsWith("sensor."))
       .slice(0, 3);
     return {
-      title: "Energie",
+      title: "Energy",
       entities: picks.length
         ? picks.map((e) => ({ entity: e, max: 5000 }))
         : [{ entity: "", max: 5000 }],
@@ -45,11 +45,11 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
 
   setConfig(config) {
     if (!config || !Array.isArray(config.entities) || config.entities.length === 0) {
-      throw new Error('FuDash: "entities" muss mindestens einen Eintrag enthalten');
+      throw new Error('FuDash: "entities" must contain at least one entry');
     }
     for (const [i, entry] of config.entities.entries()) {
       if (!entry || typeof entry !== "object" || !entry.entity) {
-        throw new Error(`FuDash: entities[${i}].entity fehlt`);
+        throw new Error(`FuDash: entities[${i}].entity is missing`);
       }
     }
     super.setConfig(config);
@@ -70,7 +70,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
     const rows = c.entities
       .map(
         (_, i) => `
-      <div class="row" data-idx="${i}" tabindex="0" role="button" aria-label="Verlauf anzeigen">
+      <div class="row" data-idx="${i}" tabindex="0" role="button" aria-label="Show history">
         <div class="head"><span class="name"></span></div>
         <div class="body">
           <div class="bar" role="meter"></div>
@@ -251,7 +251,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       if (FuDash.isUnavailable(state)) {
         row.classList.add("unavailable");
         valEl.textContent = "–";
-        bar.setAttribute("aria-valuetext", "nicht verfuegbar");
+        bar.setAttribute("aria-valuetext", "unavailable");
         bar.querySelectorAll(".seg").forEach((s) => s.classList.remove("on"));
         return;
       }

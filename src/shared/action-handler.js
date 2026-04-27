@@ -24,7 +24,7 @@ FuDash.ACTION_TYPES = [
 FuDash.ACTIONS_SCHEMA = Object.freeze({
   type: "expandable",
   name: "interactions",
-  title: "Interaktionen",
+  title: "Interactions",
   icon: "mdi:gesture-tap",
   schema: [
     { name: "tap_action", selector: { ui_action: {} } },
@@ -33,12 +33,12 @@ FuDash.ACTIONS_SCHEMA = Object.freeze({
   ],
 });
 
-// Labels fuer computeLabel, damit die Felder auf Deutsch angezeigt werden.
+// Labels fuer computeLabel (englisch, konsistent mit HA-Standard).
 FuDash.ACTION_LABELS = Object.freeze({
-  interactions: "Interaktionen",
-  tap_action: "Aktion bei Klick",
-  hold_action: "Aktion bei Long-Press",
-  double_tap_action: "Aktion bei Doppel-Klick",
+  interactions: "Interactions",
+  tap_action: "Tap action",
+  hold_action: "Hold action",
+  double_tap_action: "Double tap action",
 });
 
 // Fuehrt genau eine Action aus. Wird von bindActions intern aufgerufen,

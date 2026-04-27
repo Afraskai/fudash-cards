@@ -4,6 +4,27 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.11.0] – 2026-04-27
+
+### Geändert (Breaking-ish UX)
+- **Sprache**: Alle Editor-Labels, Helper-Texte, Card-Picker-Beschreibungen,
+  Tooltips, `aria-label`s und Fehlermeldungen sind nun **Englisch**, um
+  die Karten in der internationalen Home-Assistant-Community ohne
+  Sprachbarriere nutzbar zu machen.
+- Bestehende Karten in Dashboards funktionieren weiter; lediglich neue
+  Stub-Konfigurationen (z. B. Bar-Card-Default-Titel „Energy" statt
+  „Energie") und der Donut-Center-Default („Total" statt „Gesamt")
+  haben neue Standardwerte.
+
+### Hinzugefügt
+- **Doku zweisprachig**: `README.md` (Englisch, primär für GitHub und
+  HACS) und `README.de.md` (Deutsch). Beide Dateien sind oben gegenseitig
+  verlinkt.
+
+### Anmerkung
+- Source-Kommentare im Code bleiben Deutsch (Maintainer-Sprache); UI- und
+  Doku-Strings sind durchgängig Englisch.
+
 ## [0.10.0] – 2026-04-24
 
 ### Hinzugefügt

@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-04-24T14:47:36Z
+ *  Built: 2026-04-27T07:18:07Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -12,7 +12,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.9.1";
+FuDash.VERSION = "0.11.0";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {
@@ -80,25 +80,25 @@ FuDash.COLOR_PRESETS = {
 
 // Auswahlliste fuer Editoren (bleibt in Sync mit COLOR_PRESETS).
 FuDash.COLOR_OPTIONS = [
-  { value: "auto", label: "Auto (nach Schwelle)" },
-  { value: "primary", label: "Primaerfarbe" },
-  { value: "success", label: "Gruen (Erfolg)" },
-  { value: "warn", label: "Gelb (Warnung)" },
-  { value: "crit", label: "Rot (Kritisch)" },
-  { value: "blue", label: "Blau" },
+  { value: "auto", label: "Auto (by threshold)" },
+  { value: "primary", label: "Primary" },
+  { value: "success", label: "Green (success)" },
+  { value: "warn", label: "Yellow (warning)" },
+  { value: "crit", label: "Red (critical)" },
+  { value: "blue", label: "Blue" },
   { value: "indigo", label: "Indigo" },
   { value: "teal", label: "Teal" },
   { value: "cyan", label: "Cyan" },
-  { value: "green", label: "Gruen" },
-  { value: "lime", label: "Limette" },
+  { value: "green", label: "Green" },
+  { value: "lime", label: "Lime" },
   { value: "amber", label: "Amber" },
   { value: "orange", label: "Orange" },
-  { value: "red", label: "Rot" },
+  { value: "red", label: "Red" },
   { value: "pink", label: "Pink" },
   { value: "rose", label: "Rose" },
-  { value: "purple", label: "Violett" },
+  { value: "purple", label: "Purple" },
   { value: "slate", label: "Slate" },
-  { value: "muted", label: "Grau" },
+  { value: "muted", label: "Grey" },
 ];
 
 // Klassifiziert einen Wert anhand optionaler warn/crit-Schwellen und
@@ -168,7 +168,7 @@ FuDash.BaseCard = class FudashBaseCard extends HTMLElement {
 
   setConfig(config) {
     if (!config || typeof config !== "object") {
-      throw new Error("FuDash: Konfiguration fehlt oder ist ungueltig");
+      throw new Error("FuDash: configuration missing or invalid");
     }
     this._config = config;
     this._rendered = false;
@@ -226,7 +226,7 @@ FuDash.ACTION_TYPES = [
 FuDash.ACTIONS_SCHEMA = Object.freeze({
   type: "expandable",
   name: "interactions",
-  title: "Interaktionen",
+  title: "Interactions",
   icon: "mdi:gesture-tap",
   schema: [
     { name: "tap_action", selector: { ui_action: {} } },
@@ -235,12 +235,12 @@ FuDash.ACTIONS_SCHEMA = Object.freeze({
   ],
 });
 
-// Labels fuer computeLabel, damit die Felder auf Deutsch angezeigt werden.
+// Labels fuer computeLabel (englisch, konsistent mit HA-Standard).
 FuDash.ACTION_LABELS = Object.freeze({
-  interactions: "Interaktionen",
-  tap_action: "Aktion bei Klick",
-  hold_action: "Aktion bei Long-Press",
-  double_tap_action: "Aktion bei Doppel-Klick",
+  interactions: "Interactions",
+  tap_action: "Tap action",
+  hold_action: "Hold action",
+  double_tap_action: "Double tap action",
 });
 
 // Fuehrt genau eine Action aus. Wird von bindActions intern aufgerufen,
@@ -572,7 +572,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       .filter((e) => typeof e === "string" && e.startsWith("sensor."))
       .slice(0, 3);
     return {
-      title: "Energie",
+      title: "Energy",
       entities: picks.length
         ? picks.map((e) => ({ entity: e, max: 5000 }))
         : [{ entity: "", max: 5000 }],
@@ -609,11 +609,11 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
 
   setConfig(config) {
     if (!config || !Array.isArray(config.entities) || config.entities.length === 0) {
-      throw new Error('FuDash: "entities" muss mindestens einen Eintrag enthalten');
+      throw new Error('FuDash: "entities" must contain at least one entry');
     }
     for (const [i, entry] of config.entities.entries()) {
       if (!entry || typeof entry !== "object" || !entry.entity) {
-        throw new Error(`FuDash: entities[${i}].entity fehlt`);
+        throw new Error(`FuDash: entities[${i}].entity is missing`);
       }
     }
     super.setConfig(config);
@@ -634,7 +634,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
     const rows = c.entities
       .map(
         (_, i) => `
-      <div class="row" data-idx="${i}" tabindex="0" role="button" aria-label="Verlauf anzeigen">
+      <div class="row" data-idx="${i}" tabindex="0" role="button" aria-label="Show history">
         <div class="head"><span class="name"></span></div>
         <div class="body">
           <div class="bar" role="meter"></div>
@@ -815,7 +815,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       if (FuDash.isUnavailable(state)) {
         row.classList.add("unavailable");
         valEl.textContent = "–";
-        bar.setAttribute("aria-valuetext", "nicht verfuegbar");
+        bar.setAttribute("aria-valuetext", "unavailable");
         bar.querySelectorAll(".seg").forEach((s) => s.classList.remove("on"));
         return;
       }
@@ -912,21 +912,21 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
     this._form.schema = this._schema();
     this._form.computeLabel = (s) =>
       ({
-        title: "Titel",
-        segments: "Segmente",
-        gap: "Abstand zwischen Segmenten (px)",
-        height: "Balkenhoehe (px)",
-        animate: "Animation beim Aenderungswert",
-        value_color: "Standardfarbe (alle Balken)",
-        entities: "Entities (YAML-Liste)",
+        title: "Title",
+        segments: "Segments",
+        gap: "Gap between segments (px)",
+        height: "Bar height (px)",
+        animate: "Animate value changes",
+        value_color: "Default color (all bars)",
+        entities: "Entities (YAML list)",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
         entities:
-          "Jeder Eintrag: entity (Pflicht), name, max, warn, crit, color.",
+          "Each entry: entity (required), name, max, warn, crit, color.",
         value_color:
-          "Wird verwendet, wenn ein Entity-Eintrag keine eigene 'color'-Option hat.",
+          "Used when an entity entry has no own 'color' option.",
       }[s.name]);
   }
 
@@ -1018,7 +1018,7 @@ FuDash.GaugeCard = class FudashGaugeCard extends FuDash.BaseCard {
 
   setConfig(config) {
     if (!config || !config.entity) {
-      throw new Error('FuDash: Feld "entity" ist erforderlich');
+      throw new Error('FuDash: "entity" is required');
     }
     super.setConfig(config);
   }
@@ -1102,7 +1102,7 @@ FuDash.GaugeCard = class FudashGaugeCard extends FuDash.BaseCard {
 
     this.shadowRoot.innerHTML = `
       <style>${FuDash.sharedStyles}${this._styles(size, stroke)}</style>
-      <ha-card tabindex="0" role="button" aria-label="Verlauf anzeigen">
+      <ha-card tabindex="0" role="button" aria-label="Show history">
         <div class="wrap">
           <div class="name"></div>
           <div class="gauge">
@@ -1250,7 +1250,7 @@ FuDash.GaugeCard = class FudashGaugeCard extends FuDash.BaseCard {
       if (valueEl) valueEl.textContent = "–";
       if (unitEl) unitEl.textContent = "";
       segs.forEach((el) => el.classList.remove("on"));
-      if (svg) svg.setAttribute("aria-valuetext", "nicht verfuegbar");
+      if (svg) svg.setAttribute("aria-valuetext", "unavailable");
       if (marker) marker.style.transform = `rotate(${this._geom.startAngle}deg)`;
       return;
     }
@@ -1342,19 +1342,19 @@ FuDash.GaugeEditor = class FudashGaugeEditor extends HTMLElement {
     this._form.computeLabel = (s) =>
       ({
         entity: "Entity",
-        name: "Anzeigename",
+        name: "Display name",
         min: "Min",
         max: "Max",
-        warn: "Warn-Schwelle (gelb)",
-        crit: "Krit-Schwelle (rot)",
-        needle: "Marker anzeigen",
-        size: "Groesse (px)",
-        show_numbers: "Wert in der Mitte anzeigen",
-        show_range: "Min/Max unter dem Gauge anzeigen",
-        segments: "Segmentanzahl",
-        segment_gap: "Segmentluecke (Grad)",
-        color: "Farbe",
-        unit: "Einheit (ueberschreibt Entity-Einheit)",
+        warn: "Warning threshold (yellow)",
+        crit: "Critical threshold (red)",
+        needle: "Show marker",
+        size: "Size (px)",
+        show_numbers: "Show value in center",
+        show_range: "Show min/max below gauge",
+        segments: "Segment count",
+        segment_gap: "Segment gap (degrees)",
+        color: "Color",
+        unit: "Unit (overrides entity unit)",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
   }
@@ -1440,7 +1440,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
       .filter((e) => typeof e === "string" && e.startsWith("sensor."))
       .slice(0, 3);
     return {
-      title: "Verteilung",
+      title: "Distribution",
       size: 200,
       inner_radius: 65,
       segments: 60,
@@ -1486,11 +1486,11 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
       !Array.isArray(config.entities) ||
       config.entities.length === 0
     ) {
-      throw new Error('FuDash: "entities" muss mindestens einen Eintrag enthalten');
+      throw new Error('FuDash: "entities" must contain at least one entry');
     }
     for (const [i, entry] of config.entities.entries()) {
       if (!entry || typeof entry !== "object" || !entry.entity) {
-        throw new Error(`FuDash: entities[${i}].entity fehlt`);
+        throw new Error(`FuDash: entities[${i}].entity is missing`);
       }
     }
     super.setConfig(config);
@@ -1512,7 +1512,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
         ${c.title ? `<div class="fudash-title">${FuDash.escapeHtml(c.title)}</div>` : ""}
         <div class="wrap">
           <div class="donut-wrap">
-            <svg class="donut" preserveAspectRatio="xMidYMid meet" aria-label="Anteile"></svg>
+            <svg class="donut" preserveAspectRatio="xMidYMid meet" aria-label="Ratios"></svg>
             <div class="center">
               <div class="center-value"></div>
               <div class="center-label"></div>
@@ -1634,7 +1634,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
         const color =
           FuDash.COLOR_PRESETS[e.color] || e.color || "var(--primary-color)";
         return `
-          <div class="legend-item" data-idx="${i}" tabindex="0" role="button" aria-label="Verlauf anzeigen">
+          <div class="legend-item" data-idx="${i}" tabindex="0" role="button" aria-label="Show history">
             <span class="legend-dot" style="background:${color}"></span>
             <span class="legend-name"></span>
             <span class="legend-val"></span>
@@ -1780,7 +1780,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
       const name = entry.name || state?.attributes?.friendly_name || entry.entity;
       const titleEl = el.querySelector("title");
       if (titleEl) titleEl.textContent = name;
-      el.setAttribute("aria-label", `${name} - Verlauf anzeigen`);
+      el.setAttribute("aria-label", `${name} - show history`);
       FuDash.bindActions(el, this, () => {
         const eCfg = this._config.entities[idx] || {};
         return {
@@ -1816,7 +1816,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
     if (mode === "total") {
       const unit = this._commonUnit(raw);
       valEl.textContent = `${FuDash.formatNumber(this._hass, total)}${unit ? " " + unit : ""}`;
-      labEl.textContent = c.center_label || "Gesamt";
+      labEl.textContent = c.center_label || "Total";
       return;
     }
     // Entity-spezifischer Center-Wert
@@ -1840,7 +1840,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
     const valEl = this.shadowRoot.querySelector(".center-value");
     const labEl = this.shadowRoot.querySelector(".center-label");
     if (valEl) valEl.textContent = "–";
-    if (labEl) labEl.textContent = this._config.center_label || "keine Daten";
+    if (labEl) labEl.textContent = this._config.center_label || "no data";
   }
 
   // Liefert Einheit zurueck, wenn alle Entities dieselbe haben.
@@ -1929,27 +1929,27 @@ FuDash.DonutEditor = class FudashDonutCardEditor extends HTMLElement {
     this._form.schema = this._schema();
     this._form.computeLabel = (s) =>
       ({
-        title: "Titel",
-        size: "Groesse (px)",
-        inner_radius: "Innenradius (%)  (0 = Pie)",
-        segments: "Segmentanzahl",
-        segment_gap: "Segmentluecke (Grad)",
-        show_total: "Summe in der Mitte anzeigen",
-        center: "Center-Entity (optional, statt Summe)",
-        center_label: "Center-Untertitel",
-        show_legend: "Legende anzeigen",
-        show_percent: "Prozente in der Legende",
-        entities: "Entities (YAML-Liste)",
+        title: "Title",
+        size: "Size (px)",
+        inner_radius: "Inner radius (%)  (0 = pie)",
+        segments: "Segment count",
+        segment_gap: "Segment gap (degrees)",
+        show_total: "Show total in center",
+        center: "Center entity (optional, instead of total)",
+        center_label: "Center subtitle",
+        show_legend: "Show legend",
+        show_percent: "Show percentages in legend",
+        entities: "Entities (YAML list)",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
         inner_radius:
-          "0 = Pie-Chart, 65 = klassischer Donut, >80 = duenner Ring.",
+          "0 = pie chart, 65 = classic donut, >80 = thin ring.",
         center:
-          "Leer lassen fuer Summe. Optional Entity-ID, deren Wert gross in der Mitte steht.",
+          "Leave empty for total. Optionally entity ID whose value is shown large in the center.",
         entities:
-          "Jeder Eintrag: entity (Pflicht), name, color, unit.",
+          "Each entry: entity (required), name, color, unit.",
       }[s.name]);
   }
 
@@ -2052,7 +2052,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
 
   setConfig(config) {
     if (!config || !config.entity) {
-      throw new Error('FuDash: "entity" ist Pflicht');
+      throw new Error('FuDash: "entity" is required');
     }
     // Toggle-Zustand ueber Config-Reloads halten (siehe Chart-Card).
     // Muss VOR super.setConfig gesetzt werden, weil super._render triggert.
@@ -2133,18 +2133,18 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
     const showToggle = showTrend && c.show_type_toggle !== false;
     this.shadowRoot.innerHTML = `
       <style>${FuDash.sharedStyles}${this._styles()}</style>
-      <ha-card tabindex="0" role="button" aria-label="Verlauf anzeigen">
+      <ha-card tabindex="0" role="button" aria-label="Show history">
         <div class="top">
           <span class="name"></span>
           <span class="top-right">
             ${showDelta ? `<span class="delta" hidden></span>` : ""}
             ${
               showToggle
-                ? `<div class="type-toggle" role="group" aria-label="Darstellung">
-                     <button type="button" class="tgl" data-type="line" title="Linie">
+                ? `<div class="type-toggle" role="group" aria-label="Chart type">
+                     <button type="button" class="tgl" data-type="line" title="Line">
                        <svg viewBox="0 0 24 16" aria-hidden="true"><path d="M1 13 L6 8 L11 11 L16 4 L23 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                      </button>
-                     <button type="button" class="tgl" data-type="bar" title="Balken">
+                     <button type="button" class="tgl" data-type="bar" title="Bars">
                        <svg viewBox="0 0 24 16" aria-hidden="true"><rect x="2" y="8" width="3" height="6" rx="1"/><rect x="7" y="5" width="3" height="9" rx="1"/><rect x="12" y="9" width="3" height="5" rx="1"/><rect x="17" y="3" width="3" height="11" rx="1"/></svg>
                      </button>
                    </div>`
@@ -2434,7 +2434,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       this._updateDelta();
       this._updateStats();
     } catch (err) {
-      console.warn("FuDash: Stat-Card fetch fehlgeschlagen", err);
+      console.warn("FuDash: stat card history fetch failed", err);
     }
   }
 
@@ -2584,7 +2584,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
         : `${arrow} ${FuDash.formatNumber(this._hass, Math.abs(diff))}`;
     el.textContent = label;
     el.dataset.trend = trend;
-    el.title = `Vergleich zum Wert vor ${this._config.hours || 24}\u202Fh`;
+    el.title = `Compared to value ${this._config.hours || 24}\u202Fh ago`;
     el.hidden = false;
   }
 
@@ -2626,9 +2626,9 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       el.parentElement.title = `${title}: ${fmt(value)}${unit}`;
     };
     const hours = this._config.hours || 24;
-    setStat("min", min, `Minimum der letzten ${hours}\u202Fh`);
-    setStat("avg", avg, `Mittelwert der letzten ${hours}\u202Fh`);
-    setStat("max", max, `Maximum der letzten ${hours}\u202Fh`);
+    setStat("min", min, `Minimum over last ${hours}\u202Fh`);
+    setStat("avg", avg, `Average over last ${hours}\u202Fh`);
+    setStat("max", max, `Maximum over last ${hours}\u202Fh`);
     box.hidden = false;
   }
 };
@@ -2680,28 +2680,28 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
     this._form.computeLabel = (s) =>
       ({
         entity: "Entity",
-        name: "Anzeigename",
-        unit: "Einheit (optional)",
-        color: "Farbe",
-        hours: "Trend-Zeitraum (Stunden)",
-        decimals: "Nachkommastellen (0-6, leer = auto)",
-        show_trend: "Sparkline anzeigen",
-        show_delta: "Delta-Anzeige",
-        show_stats: "Min/\u00D8/Max anzeigen",
-        chart_type: "Sparkline-Darstellung (Start-Typ)",
-        show_type_toggle: "Umschalter Linie/Balken anzeigen",
-        bar_width: "Balkenbreite (px)",
-        bar_gap: "Balkenluecke (px)",
-        refresh_interval: "Aktualisierungsintervall (Sek.)",
+        name: "Display name",
+        unit: "Unit (optional)",
+        color: "Color",
+        hours: "Trend period (hours)",
+        decimals: "Decimals (0-6, empty = auto)",
+        show_trend: "Show sparkline",
+        show_delta: "Show delta",
+        show_stats: "Show min/\u00D8/max",
+        chart_type: "Sparkline type (initial)",
+        show_type_toggle: "Show line/bar toggle",
+        bar_width: "Bar width (px)",
+        bar_gap: "Bar gap (px)",
+        refresh_interval: "Refresh interval (s)",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
-        hours: "1-168 h. Bestimmt Trend und Delta-Referenzpunkt.",
+        hours: "1-168 h. Defines trend and delta reference point.",
         decimals:
-          "Leer lassen fuer automatisch (abhaengig von der Groessenordnung).",
+          "Leave empty for automatic (depending on magnitude).",
         bar_width:
-          "Nur im Balken-Modus. Die Datenpunkt-Dichte passt sich automatisch an.",
+          "Bar mode only. Data point density adapts automatically.",
       }[s.name]);
   }
 
@@ -2755,8 +2755,8 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
                 select: {
                   mode: "dropdown",
                   options: [
-                    { value: "line", label: "Linie" },
-                    { value: "bar", label: "Balken" },
+                    { value: "line", label: "Line" },
+                    { value: "bar", label: "Bars" },
                   ],
                 },
               },
@@ -2837,27 +2837,27 @@ addCard({
   type: "fudash-bar-card",
   name: "FuDash Bar",
   description:
-    "Segmentierter horizontaler Balken im Fuel-Used-Stil, z. B. fuer Hauslast / Solar / Netzbezug.",
+    "Segmented horizontal bar in fuel-used style, e.g. for house load / solar / grid import.",
   preview: true,
 });
 addCard({
   type: "fudash-gauge-card",
   name: "FuDash Gauge",
-  description: "Moderne Material-3-Radial-Gauge.",
+  description: "Modern Material 3 radial gauge.",
   preview: true,
 });
 addCard({
   type: "fudash-donut-card",
   name: "FuDash Donut",
   description:
-    "Donut-/Pie-Diagramm fuer Anteile (z. B. Strommix, Verteilungen) mit Center-Label.",
+    "Donut / pie chart for ratios (e.g. energy mix, distributions) with center label.",
   preview: true,
 });
 addCard({
   type: "fudash-stat-card",
   name: "FuDash Stat",
   description:
-    "Kompakte KPI-Karte mit grosser Einzelzahl, Trend-Sparkline und Delta.",
+    "Compact KPI card with large single value, trend sparkline, delta and min/avg/max.",
   preview: true,
 });
 

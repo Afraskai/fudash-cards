@@ -3,7 +3,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.9.1";
+FuDash.VERSION = "0.11.0";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {
@@ -71,25 +71,25 @@ FuDash.COLOR_PRESETS = {
 
 // Auswahlliste fuer Editoren (bleibt in Sync mit COLOR_PRESETS).
 FuDash.COLOR_OPTIONS = [
-  { value: "auto", label: "Auto (nach Schwelle)" },
-  { value: "primary", label: "Primaerfarbe" },
-  { value: "success", label: "Gruen (Erfolg)" },
-  { value: "warn", label: "Gelb (Warnung)" },
-  { value: "crit", label: "Rot (Kritisch)" },
-  { value: "blue", label: "Blau" },
+  { value: "auto", label: "Auto (by threshold)" },
+  { value: "primary", label: "Primary" },
+  { value: "success", label: "Green (success)" },
+  { value: "warn", label: "Yellow (warning)" },
+  { value: "crit", label: "Red (critical)" },
+  { value: "blue", label: "Blue" },
   { value: "indigo", label: "Indigo" },
   { value: "teal", label: "Teal" },
   { value: "cyan", label: "Cyan" },
-  { value: "green", label: "Gruen" },
-  { value: "lime", label: "Limette" },
+  { value: "green", label: "Green" },
+  { value: "lime", label: "Lime" },
   { value: "amber", label: "Amber" },
   { value: "orange", label: "Orange" },
-  { value: "red", label: "Rot" },
+  { value: "red", label: "Red" },
   { value: "pink", label: "Pink" },
   { value: "rose", label: "Rose" },
-  { value: "purple", label: "Violett" },
+  { value: "purple", label: "Purple" },
   { value: "slate", label: "Slate" },
-  { value: "muted", label: "Grau" },
+  { value: "muted", label: "Grey" },
 ];
 
 // Klassifiziert einen Wert anhand optionaler warn/crit-Schwellen und

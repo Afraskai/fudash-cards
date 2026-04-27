@@ -44,7 +44,7 @@ FuDash.GaugeCard = class FudashGaugeCard extends FuDash.BaseCard {
 
   setConfig(config) {
     if (!config || !config.entity) {
-      throw new Error('FuDash: Feld "entity" ist erforderlich');
+      throw new Error('FuDash: "entity" is required');
     }
     super.setConfig(config);
   }
@@ -128,7 +128,7 @@ FuDash.GaugeCard = class FudashGaugeCard extends FuDash.BaseCard {
 
     this.shadowRoot.innerHTML = `
       <style>${FuDash.sharedStyles}${this._styles(size, stroke)}</style>
-      <ha-card tabindex="0" role="button" aria-label="Verlauf anzeigen">
+      <ha-card tabindex="0" role="button" aria-label="Show history">
         <div class="wrap">
           <div class="name"></div>
           <div class="gauge">
@@ -276,7 +276,7 @@ FuDash.GaugeCard = class FudashGaugeCard extends FuDash.BaseCard {
       if (valueEl) valueEl.textContent = "–";
       if (unitEl) unitEl.textContent = "";
       segs.forEach((el) => el.classList.remove("on"));
-      if (svg) svg.setAttribute("aria-valuetext", "nicht verfuegbar");
+      if (svg) svg.setAttribute("aria-valuetext", "unavailable");
       if (marker) marker.style.transform = `rotate(${this._geom.startAngle}deg)`;
       return;
     }

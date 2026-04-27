@@ -53,7 +53,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
 
   setConfig(config) {
     if (!config || !config.entity) {
-      throw new Error('FuDash: "entity" ist Pflicht');
+      throw new Error('FuDash: "entity" is required');
     }
     // Toggle-Zustand ueber Config-Reloads halten (siehe Chart-Card).
     // Muss VOR super.setConfig gesetzt werden, weil super._render triggert.
@@ -134,18 +134,18 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
     const showToggle = showTrend && c.show_type_toggle !== false;
     this.shadowRoot.innerHTML = `
       <style>${FuDash.sharedStyles}${this._styles()}</style>
-      <ha-card tabindex="0" role="button" aria-label="Verlauf anzeigen">
+      <ha-card tabindex="0" role="button" aria-label="Show history">
         <div class="top">
           <span class="name"></span>
           <span class="top-right">
             ${showDelta ? `<span class="delta" hidden></span>` : ""}
             ${
               showToggle
-                ? `<div class="type-toggle" role="group" aria-label="Darstellung">
-                     <button type="button" class="tgl" data-type="line" title="Linie">
+                ? `<div class="type-toggle" role="group" aria-label="Chart type">
+                     <button type="button" class="tgl" data-type="line" title="Line">
                        <svg viewBox="0 0 24 16" aria-hidden="true"><path d="M1 13 L6 8 L11 11 L16 4 L23 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                      </button>
-                     <button type="button" class="tgl" data-type="bar" title="Balken">
+                     <button type="button" class="tgl" data-type="bar" title="Bars">
                        <svg viewBox="0 0 24 16" aria-hidden="true"><rect x="2" y="8" width="3" height="6" rx="1"/><rect x="7" y="5" width="3" height="9" rx="1"/><rect x="12" y="9" width="3" height="5" rx="1"/><rect x="17" y="3" width="3" height="11" rx="1"/></svg>
                      </button>
                    </div>`
@@ -435,7 +435,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       this._updateDelta();
       this._updateStats();
     } catch (err) {
-      console.warn("FuDash: Stat-Card fetch fehlgeschlagen", err);
+      console.warn("FuDash: stat card history fetch failed", err);
     }
   }
 
@@ -585,7 +585,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
         : `${arrow} ${FuDash.formatNumber(this._hass, Math.abs(diff))}`;
     el.textContent = label;
     el.dataset.trend = trend;
-    el.title = `Vergleich zum Wert vor ${this._config.hours || 24}\u202Fh`;
+    el.title = `Compared to value ${this._config.hours || 24}\u202Fh ago`;
     el.hidden = false;
   }
 
@@ -627,9 +627,9 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       el.parentElement.title = `${title}: ${fmt(value)}${unit}`;
     };
     const hours = this._config.hours || 24;
-    setStat("min", min, `Minimum der letzten ${hours}\u202Fh`);
-    setStat("avg", avg, `Mittelwert der letzten ${hours}\u202Fh`);
-    setStat("max", max, `Maximum der letzten ${hours}\u202Fh`);
+    setStat("min", min, `Minimum over last ${hours}\u202Fh`);
+    setStat("avg", avg, `Average over last ${hours}\u202Fh`);
+    setStat("max", max, `Maximum over last ${hours}\u202Fh`);
     box.hidden = false;
   }
 };

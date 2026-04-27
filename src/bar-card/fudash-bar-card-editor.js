@@ -39,21 +39,21 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
     this._form.schema = this._schema();
     this._form.computeLabel = (s) =>
       ({
-        title: "Titel",
-        segments: "Segmente",
-        gap: "Abstand zwischen Segmenten (px)",
-        height: "Balkenhoehe (px)",
-        animate: "Animation beim Aenderungswert",
-        value_color: "Standardfarbe (alle Balken)",
-        entities: "Entities (YAML-Liste)",
+        title: "Title",
+        segments: "Segments",
+        gap: "Gap between segments (px)",
+        height: "Bar height (px)",
+        animate: "Animate value changes",
+        value_color: "Default color (all bars)",
+        entities: "Entities (YAML list)",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
         entities:
-          "Jeder Eintrag: entity (Pflicht), name, max, warn, crit, color.",
+          "Each entry: entity (required), name, max, warn, crit, color.",
         value_color:
-          "Wird verwendet, wenn ein Entity-Eintrag keine eigene 'color'-Option hat.",
+          "Used when an entity entry has no own 'color' option.",
       }[s.name]);
   }
 

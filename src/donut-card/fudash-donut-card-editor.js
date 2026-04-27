@@ -45,27 +45,27 @@ FuDash.DonutEditor = class FudashDonutCardEditor extends HTMLElement {
     this._form.schema = this._schema();
     this._form.computeLabel = (s) =>
       ({
-        title: "Titel",
-        size: "Groesse (px)",
-        inner_radius: "Innenradius (%)  (0 = Pie)",
-        segments: "Segmentanzahl",
-        segment_gap: "Segmentluecke (Grad)",
-        show_total: "Summe in der Mitte anzeigen",
-        center: "Center-Entity (optional, statt Summe)",
-        center_label: "Center-Untertitel",
-        show_legend: "Legende anzeigen",
-        show_percent: "Prozente in der Legende",
-        entities: "Entities (YAML-Liste)",
+        title: "Title",
+        size: "Size (px)",
+        inner_radius: "Inner radius (%)  (0 = pie)",
+        segments: "Segment count",
+        segment_gap: "Segment gap (degrees)",
+        show_total: "Show total in center",
+        center: "Center entity (optional, instead of total)",
+        center_label: "Center subtitle",
+        show_legend: "Show legend",
+        show_percent: "Show percentages in legend",
+        entities: "Entities (YAML list)",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
         inner_radius:
-          "0 = Pie-Chart, 65 = klassischer Donut, >80 = duenner Ring.",
+          "0 = pie chart, 65 = classic donut, >80 = thin ring.",
         center:
-          "Leer lassen fuer Summe. Optional Entity-ID, deren Wert gross in der Mitte steht.",
+          "Leave empty for total. Optionally entity ID whose value is shown large in the center.",
         entities:
-          "Jeder Eintrag: entity (Pflicht), name, color, unit.",
+          "Each entry: entity (required), name, color, unit.",
       }[s.name]);
   }
 

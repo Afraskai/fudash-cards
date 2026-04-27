@@ -36,27 +36,27 @@ addCard({
   type: "fudash-bar-card",
   name: "FuDash Bar",
   description:
-    "Segmentierter horizontaler Balken im Fuel-Used-Stil, z. B. fuer Hauslast / Solar / Netzbezug.",
+    "Segmented horizontal bar in fuel-used style, e.g. for house load / solar / grid import.",
   preview: true,
 });
 addCard({
   type: "fudash-gauge-card",
   name: "FuDash Gauge",
-  description: "Moderne Material-3-Radial-Gauge.",
+  description: "Modern Material 3 radial gauge.",
   preview: true,
 });
 addCard({
   type: "fudash-donut-card",
   name: "FuDash Donut",
   description:
-    "Donut-/Pie-Diagramm fuer Anteile (z. B. Strommix, Verteilungen) mit Center-Label.",
+    "Donut / pie chart for ratios (e.g. energy mix, distributions) with center label.",
   preview: true,
 });
 addCard({
   type: "fudash-stat-card",
   name: "FuDash Stat",
   description:
-    "Kompakte KPI-Karte mit grosser Einzelzahl, Trend-Sparkline und Delta.",
+    "Compact KPI card with large single value, trend sparkline, delta and min/avg/max.",
   preview: true,
 });
 

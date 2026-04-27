@@ -14,7 +14,7 @@ FuDash.BaseCard = class FudashBaseCard extends HTMLElement {
 
   setConfig(config) {
     if (!config || typeof config !== "object") {
-      throw new Error("FuDash: Konfiguration fehlt oder ist ungueltig");
+      throw new Error("FuDash: configuration missing or invalid");
     }
     this._config = config;
     this._rendered = false;

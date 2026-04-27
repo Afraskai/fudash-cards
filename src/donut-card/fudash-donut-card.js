@@ -11,7 +11,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
       .filter((e) => typeof e === "string" && e.startsWith("sensor."))
       .slice(0, 3);
     return {
-      title: "Verteilung",
+      title: "Distribution",
       size: 200,
       inner_radius: 65,
       segments: 60,
@@ -57,11 +57,11 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
       !Array.isArray(config.entities) ||
       config.entities.length === 0
     ) {
-      throw new Error('FuDash: "entities" muss mindestens einen Eintrag enthalten');
+      throw new Error('FuDash: "entities" must contain at least one entry');
     }
     for (const [i, entry] of config.entities.entries()) {
       if (!entry || typeof entry !== "object" || !entry.entity) {
-        throw new Error(`FuDash: entities[${i}].entity fehlt`);
+        throw new Error(`FuDash: entities[${i}].entity is missing`);
       }
     }
     super.setConfig(config);
@@ -83,7 +83,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
         ${c.title ? `<div class="fudash-title">${FuDash.escapeHtml(c.title)}</div>` : ""}
         <div class="wrap">
           <div class="donut-wrap">
-            <svg class="donut" preserveAspectRatio="xMidYMid meet" aria-label="Anteile"></svg>
+            <svg class="donut" preserveAspectRatio="xMidYMid meet" aria-label="Ratios"></svg>
             <div class="center">
               <div class="center-value"></div>
               <div class="center-label"></div>
@@ -205,7 +205,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
         const color =
           FuDash.COLOR_PRESETS[e.color] || e.color || "var(--primary-color)";
         return `
-          <div class="legend-item" data-idx="${i}" tabindex="0" role="button" aria-label="Verlauf anzeigen">
+          <div class="legend-item" data-idx="${i}" tabindex="0" role="button" aria-label="Show history">
             <span class="legend-dot" style="background:${color}"></span>
             <span class="legend-name"></span>
             <span class="legend-val"></span>
@@ -351,7 +351,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
       const name = entry.name || state?.attributes?.friendly_name || entry.entity;
       const titleEl = el.querySelector("title");
       if (titleEl) titleEl.textContent = name;
-      el.setAttribute("aria-label", `${name} - Verlauf anzeigen`);
+      el.setAttribute("aria-label", `${name} - show history`);
       FuDash.bindActions(el, this, () => {
         const eCfg = this._config.entities[idx] || {};
         return {
@@ -387,7 +387,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
     if (mode === "total") {
       const unit = this._commonUnit(raw);
       valEl.textContent = `${FuDash.formatNumber(this._hass, total)}${unit ? " " + unit : ""}`;
-      labEl.textContent = c.center_label || "Gesamt";
+      labEl.textContent = c.center_label || "Total";
       return;
     }
     // Entity-spezifischer Center-Wert
@@ -411,7 +411,7 @@ FuDash.DonutCard = class FudashDonutCard extends FuDash.BaseCard {
     const valEl = this.shadowRoot.querySelector(".center-value");
     const labEl = this.shadowRoot.querySelector(".center-label");
     if (valEl) valEl.textContent = "–";
-    if (labEl) labEl.textContent = this._config.center_label || "keine Daten";
+    if (labEl) labEl.textContent = this._config.center_label || "no data";
   }
 
   // Liefert Einheit zurueck, wenn alle Entities dieselbe haben.

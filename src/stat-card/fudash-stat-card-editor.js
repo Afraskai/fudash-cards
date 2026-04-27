@@ -44,28 +44,28 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
     this._form.computeLabel = (s) =>
       ({
         entity: "Entity",
-        name: "Anzeigename",
-        unit: "Einheit (optional)",
-        color: "Farbe",
-        hours: "Trend-Zeitraum (Stunden)",
-        decimals: "Nachkommastellen (0-6, leer = auto)",
-        show_trend: "Sparkline anzeigen",
-        show_delta: "Delta-Anzeige",
-        show_stats: "Min/\u00D8/Max anzeigen",
-        chart_type: "Sparkline-Darstellung (Start-Typ)",
-        show_type_toggle: "Umschalter Linie/Balken anzeigen",
-        bar_width: "Balkenbreite (px)",
-        bar_gap: "Balkenluecke (px)",
-        refresh_interval: "Aktualisierungsintervall (Sek.)",
+        name: "Display name",
+        unit: "Unit (optional)",
+        color: "Color",
+        hours: "Trend period (hours)",
+        decimals: "Decimals (0-6, empty = auto)",
+        show_trend: "Show sparkline",
+        show_delta: "Show delta",
+        show_stats: "Show min/\u00D8/max",
+        chart_type: "Sparkline type (initial)",
+        show_type_toggle: "Show line/bar toggle",
+        bar_width: "Bar width (px)",
+        bar_gap: "Bar gap (px)",
+        refresh_interval: "Refresh interval (s)",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
-        hours: "1-168 h. Bestimmt Trend und Delta-Referenzpunkt.",
+        hours: "1-168 h. Defines trend and delta reference point.",
         decimals:
-          "Leer lassen fuer automatisch (abhaengig von der Groessenordnung).",
+          "Leave empty for automatic (depending on magnitude).",
         bar_width:
-          "Nur im Balken-Modus. Die Datenpunkt-Dichte passt sich automatisch an.",
+          "Bar mode only. Data point density adapts automatically.",
       }[s.name]);
   }
 
@@ -119,8 +119,8 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
                 select: {
                   mode: "dropdown",
                   options: [
-                    { value: "line", label: "Linie" },
-                    { value: "bar", label: "Balken" },
+                    { value: "line", label: "Line" },
+                    { value: "bar", label: "Bars" },
                   ],
                 },
               },
