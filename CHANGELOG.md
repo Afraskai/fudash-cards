@@ -4,6 +4,26 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.12.0] – 2026-05-03
+
+### Hinzugefügt
+- **Stat-Card · Dynamische Einfärbung**: Neuer Schalter `dynamic_color`
+  färbt Hauptzahl und Sparkline abhängig vom aktuellen Sensorwert per
+  weichem 3-Farben-Gradient (low → mid → high) ein. Ideal z. B. für
+  Temperatur (kühl → blau, normal → primary, warm → rot), Luftfeuchte
+  oder Verbraucher-Last.
+- Konfigurierbare Stopps über sechs neue Optionen:
+  `dynamic_low_value`/`dynamic_mid_value`/`dynamic_high_value` sowie
+  `dynamic_low_color`/`dynamic_mid_color`/`dynamic_high_color`.
+  Nutzt die vorhandenen Farb-Presets und `color-mix(in oklch, …)` für
+  saubere Interpolation; Übergänge werden per CSS-Transition animiert.
+- Werte außerhalb `[low, high]` werden auf die Randfarbe geklemmt.
+  `show_trend: false` und `unavailable`-States werden sauber behandelt.
+
+### Intern
+- Neue Helfer `FuDash.resolvePresetColor` und
+  `FuDash.dynamicGradientColor` in `src/shared/utils.js`.
+
 ## [0.11.1] – 2026-05-03
 
 ### Behoben

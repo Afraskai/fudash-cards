@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-05-03T11:25:48Z
+ *  Built: 2026-05-03T11:47:32Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -12,7 +12,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.11.1";
+FuDash.VERSION = "0.12.0";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {
@@ -100,6 +100,51 @@ FuDash.COLOR_OPTIONS = [
   { value: "slate", label: "Slate" },
   { value: "muted", label: "Grey" },
 ];
+
+// Wandelt einen Farb-Namen aus COLOR_PRESETS oder eine freie CSS-Farbe
+// (#rrggbb, var(--…), oklch(…), rgb(…)) in einen fuer CSS direkt
+// verwendbaren String um. Unbekannte / leere Werte liefern null.
+FuDash.resolvePresetColor = (name) => {
+  if (!name) return null;
+  return FuDash.COLOR_PRESETS[name] || String(name);
+};
+
+// Dreifarben-Gradient (low -> mid -> high) ueber CSS color-mix().
+// Liefert einen CSS-Farb-String, der im Browser interpoliert wird.
+// Klemmt value auf [low, high]; liefert null bei ungueltigen Eingaben.
+FuDash.dynamicGradientColor = ({ value, low, mid, high, cLow, cMid, cHigh }) => {
+  if (!Number.isFinite(value)) return null;
+  const lo = Number(low);
+  const md = Number(mid);
+  const hi = Number(high);
+  if (!Number.isFinite(lo) || !Number.isFinite(md) || !Number.isFinite(hi)) {
+    return null;
+  }
+  // Sortier-Checks: low <= mid <= high.
+  if (lo > md || md > hi) return null;
+  const colorLow = FuDash.resolvePresetColor(cLow);
+  const colorMid = FuDash.resolvePresetColor(cMid);
+  const colorHigh = FuDash.resolvePresetColor(cHigh);
+  if (!colorLow || !colorMid || !colorHigh) return null;
+
+  // Klemmen.
+  if (value <= lo) return colorLow;
+  if (value >= hi) return colorHigh;
+
+  // Segment bestimmen und Mischanteil in % berechnen.
+  // Sonderfall: lo == md (nur zwei Farben zwischen mid und high).
+  // Sonderfall: md == hi (nur zwei Farben zwischen low und mid).
+  if (value <= md) {
+    if (md === lo) return colorMid;
+    const t = ((value - lo) / (md - lo)) * 100;
+    const pct = Math.max(0, Math.min(100, t)).toFixed(2);
+    return `color-mix(in oklch, ${colorLow}, ${colorMid} ${pct}%)`;
+  }
+  if (hi === md) return colorMid;
+  const t = ((value - md) / (hi - md)) * 100;
+  const pct = Math.max(0, Math.min(100, t)).toFixed(2);
+  return `color-mix(in oklch, ${colorMid}, ${colorHigh} ${pct}%)`;
+};
 
 // Klassifiziert einen Wert anhand optionaler warn/crit-Schwellen und
 // liefert ein semantisches CSS-Farb-Token.
@@ -2041,6 +2086,13 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       bar_width: 3,
       bar_gap: 1,
       color: "primary",
+      dynamic_color: false,
+      dynamic_low_value: 18,
+      dynamic_mid_value: 21,
+      dynamic_high_value: 25,
+      dynamic_low_color: "blue",
+      dynamic_mid_color: "primary",
+      dynamic_high_color: "red",
     };
   }
 
@@ -2328,8 +2380,9 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       .value {
         font-size: clamp(1.8rem, 8vw, 2.2rem);
         font-weight: 600;
-        color: var(--primary-text-color);
+        color: var(--fudash-dyn-color, var(--primary-text-color));
         font-variant-numeric: tabular-nums;
+        transition: color 400ms var(--fudash-ease);
       }
       .unit {
         font-size: 0.95rem;
@@ -2343,10 +2396,10 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
         overflow: visible;
         margin-top: 2px;
       }
-      .spark-line  { fill: none; stroke: ${color}; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-      .spark-area  { fill: ${color}; opacity: 0.18; stroke: none; }
-      .spark-dot   { fill: ${color}; stroke: var(--ha-card-background, var(--card-background-color, #1c1c1c)); stroke-width: 2; }
-      .spark-bar   { fill: ${color}; stroke: none; }
+      .spark-line  { fill: none; stroke: var(--fudash-dyn-color, ${color}); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: stroke 400ms var(--fudash-ease); }
+      .spark-area  { fill: var(--fudash-dyn-color, ${color}); opacity: 0.18; stroke: none; transition: fill 400ms var(--fudash-ease); }
+      .spark-dot   { fill: var(--fudash-dyn-color, ${color}); stroke: var(--ha-card-background, var(--card-background-color, #1c1c1c)); stroke-width: 2; transition: fill 400ms var(--fudash-ease); }
+      .spark-bar   { fill: var(--fudash-dyn-color, ${color}); stroke: none; transition: fill 400ms var(--fudash-ease); }
       .stats {
         display: flex;
         flex-wrap: wrap;
@@ -2408,7 +2461,37 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       v == null ? state.state : FuDash.formatNumber(this._hass, v, fmtOpts);
     unitEl.textContent = unit ? ` ${unit}` : "";
     this._currentValue = v;
+    this._applyDynamicColor();
     this._drawSparkline(); // zeichnet Endpunkt neu
+  }
+
+  // Setzt --fudash-dyn-color auf der Karte, wenn dynamic_color aktiv ist
+  // und der aktuelle Wert numerisch ist. Sonst wird die Variable entfernt,
+  // sodass der CSS-Fallback (statische color-Option) greift. Der Uebergang
+  // wird per CSS-Transition auf .value, .spark-line, .spark-area, .spark-dot
+  // und .spark-bar weich animiert.
+  _applyDynamicColor() {
+    const card = this.shadowRoot?.querySelector("ha-card");
+    if (!card) return;
+    const c = this._config;
+    if (!c?.dynamic_color) {
+      card.style.removeProperty("--fudash-dyn-color");
+      return;
+    }
+    const color = FuDash.dynamicGradientColor({
+      value: this._currentValue,
+      low: c.dynamic_low_value,
+      mid: c.dynamic_mid_value,
+      high: c.dynamic_high_value,
+      cLow: c.dynamic_low_color,
+      cMid: c.dynamic_mid_color,
+      cHigh: c.dynamic_high_color,
+    });
+    if (color) {
+      card.style.setProperty("--fudash-dyn-color", color);
+    } else {
+      card.style.removeProperty("--fudash-dyn-color");
+    }
   }
 
   _numberFormatOpts(sample) {
@@ -2708,6 +2791,13 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         bar_width: "Bar width (px)",
         bar_gap: "Bar gap (px)",
         refresh_interval: "Refresh interval (s)",
+        dynamic_color: "Dynamic color (by value)",
+        dynamic_low_value: "Low value",
+        dynamic_mid_value: "Mid value",
+        dynamic_high_value: "High value",
+        dynamic_low_color: "Low color",
+        dynamic_mid_color: "Mid color",
+        dynamic_high_color: "High color",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
@@ -2717,6 +2807,8 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
           "Leave empty for automatic (depending on magnitude).",
         bar_width:
           "Bar mode only. Data point density adapts automatically.",
+        dynamic_color:
+          "Smooth color gradient for the main value and sparkline based on the current value (low \u2192 mid \u2192 high).",
       }[s.name]);
   }
 
@@ -2799,6 +2891,72 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         }
       : null;
 
+    // "auto" als eigenen Farb-Eintrag fuer die dynamischen Farben
+    // nicht anbieten - hier ist nur eine konkrete Farbe sinnvoll.
+    const dynColorOptions = colorOptions.filter(
+      (opt) => opt.value !== "auto"
+    );
+    const dynamicOn = this._config?.dynamic_color === true;
+    const dynamicBlock = {
+      type: "expandable",
+      name: "",
+      title: "Dynamic color",
+      expanded: dynamicOn,
+      schema: [
+        {
+          name: "dynamic_color",
+          default: false,
+          selector: { boolean: {} },
+        },
+        ...(dynamicOn
+          ? [
+              {
+                type: "grid",
+                name: "",
+                schema: [
+                  {
+                    name: "dynamic_low_value",
+                    default: 18,
+                    selector: { number: { mode: "box", step: "any" } },
+                  },
+                  {
+                    name: "dynamic_mid_value",
+                    default: 21,
+                    selector: { number: { mode: "box", step: "any" } },
+                  },
+                  {
+                    name: "dynamic_high_value",
+                    default: 25,
+                    selector: { number: { mode: "box", step: "any" } },
+                  },
+                  {
+                    name: "dynamic_low_color",
+                    default: "blue",
+                    selector: {
+                      select: { mode: "dropdown", options: dynColorOptions },
+                    },
+                  },
+                  {
+                    name: "dynamic_mid_color",
+                    default: "primary",
+                    selector: {
+                      select: { mode: "dropdown", options: dynColorOptions },
+                    },
+                  },
+                  {
+                    name: "dynamic_high_color",
+                    default: "red",
+                    selector: {
+                      select: { mode: "dropdown", options: dynColorOptions },
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
+    };
+
     return [
       {
         name: "entity",
@@ -2808,6 +2966,7 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
       { name: "unit", selector: { text: {} } },
       commonGrid,
       ...(sparkRow ? [sparkRow] : []),
+      dynamicBlock,
       FuDash.ACTIONS_SCHEMA,
     ];
   }

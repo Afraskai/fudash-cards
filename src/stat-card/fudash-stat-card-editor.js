@@ -57,6 +57,13 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         bar_width: "Bar width (px)",
         bar_gap: "Bar gap (px)",
         refresh_interval: "Refresh interval (s)",
+        dynamic_color: "Dynamic color (by value)",
+        dynamic_low_value: "Low value",
+        dynamic_mid_value: "Mid value",
+        dynamic_high_value: "High value",
+        dynamic_low_color: "Low color",
+        dynamic_mid_color: "Mid color",
+        dynamic_high_color: "High color",
         ...FuDash.ACTION_LABELS,
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
@@ -66,6 +73,8 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
           "Leave empty for automatic (depending on magnitude).",
         bar_width:
           "Bar mode only. Data point density adapts automatically.",
+        dynamic_color:
+          "Smooth color gradient for the main value and sparkline based on the current value (low \u2192 mid \u2192 high).",
       }[s.name]);
   }
 
@@ -148,6 +157,72 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
         }
       : null;
 
+    // "auto" als eigenen Farb-Eintrag fuer die dynamischen Farben
+    // nicht anbieten - hier ist nur eine konkrete Farbe sinnvoll.
+    const dynColorOptions = colorOptions.filter(
+      (opt) => opt.value !== "auto"
+    );
+    const dynamicOn = this._config?.dynamic_color === true;
+    const dynamicBlock = {
+      type: "expandable",
+      name: "",
+      title: "Dynamic color",
+      expanded: dynamicOn,
+      schema: [
+        {
+          name: "dynamic_color",
+          default: false,
+          selector: { boolean: {} },
+        },
+        ...(dynamicOn
+          ? [
+              {
+                type: "grid",
+                name: "",
+                schema: [
+                  {
+                    name: "dynamic_low_value",
+                    default: 18,
+                    selector: { number: { mode: "box", step: "any" } },
+                  },
+                  {
+                    name: "dynamic_mid_value",
+                    default: 21,
+                    selector: { number: { mode: "box", step: "any" } },
+                  },
+                  {
+                    name: "dynamic_high_value",
+                    default: 25,
+                    selector: { number: { mode: "box", step: "any" } },
+                  },
+                  {
+                    name: "dynamic_low_color",
+                    default: "blue",
+                    selector: {
+                      select: { mode: "dropdown", options: dynColorOptions },
+                    },
+                  },
+                  {
+                    name: "dynamic_mid_color",
+                    default: "primary",
+                    selector: {
+                      select: { mode: "dropdown", options: dynColorOptions },
+                    },
+                  },
+                  {
+                    name: "dynamic_high_color",
+                    default: "red",
+                    selector: {
+                      select: { mode: "dropdown", options: dynColorOptions },
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
+    };
+
     return [
       {
         name: "entity",
@@ -157,6 +232,7 @@ FuDash.StatEditor = class FudashStatCardEditor extends HTMLElement {
       { name: "unit", selector: { text: {} } },
       commonGrid,
       ...(sparkRow ? [sparkRow] : []),
+      dynamicBlock,
       FuDash.ACTIONS_SCHEMA,
     ];
   }

@@ -27,6 +27,13 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       bar_width: 3,
       bar_gap: 1,
       color: "primary",
+      dynamic_color: false,
+      dynamic_low_value: 18,
+      dynamic_mid_value: 21,
+      dynamic_high_value: 25,
+      dynamic_low_color: "blue",
+      dynamic_mid_color: "primary",
+      dynamic_high_color: "red",
     };
   }
 
@@ -314,8 +321,9 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       .value {
         font-size: clamp(1.8rem, 8vw, 2.2rem);
         font-weight: 600;
-        color: var(--primary-text-color);
+        color: var(--fudash-dyn-color, var(--primary-text-color));
         font-variant-numeric: tabular-nums;
+        transition: color 400ms var(--fudash-ease);
       }
       .unit {
         font-size: 0.95rem;
@@ -329,10 +337,10 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
         overflow: visible;
         margin-top: 2px;
       }
-      .spark-line  { fill: none; stroke: ${color}; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-      .spark-area  { fill: ${color}; opacity: 0.18; stroke: none; }
-      .spark-dot   { fill: ${color}; stroke: var(--ha-card-background, var(--card-background-color, #1c1c1c)); stroke-width: 2; }
-      .spark-bar   { fill: ${color}; stroke: none; }
+      .spark-line  { fill: none; stroke: var(--fudash-dyn-color, ${color}); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: stroke 400ms var(--fudash-ease); }
+      .spark-area  { fill: var(--fudash-dyn-color, ${color}); opacity: 0.18; stroke: none; transition: fill 400ms var(--fudash-ease); }
+      .spark-dot   { fill: var(--fudash-dyn-color, ${color}); stroke: var(--ha-card-background, var(--card-background-color, #1c1c1c)); stroke-width: 2; transition: fill 400ms var(--fudash-ease); }
+      .spark-bar   { fill: var(--fudash-dyn-color, ${color}); stroke: none; transition: fill 400ms var(--fudash-ease); }
       .stats {
         display: flex;
         flex-wrap: wrap;
@@ -394,7 +402,37 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       v == null ? state.state : FuDash.formatNumber(this._hass, v, fmtOpts);
     unitEl.textContent = unit ? ` ${unit}` : "";
     this._currentValue = v;
+    this._applyDynamicColor();
     this._drawSparkline(); // zeichnet Endpunkt neu
+  }
+
+  // Setzt --fudash-dyn-color auf der Karte, wenn dynamic_color aktiv ist
+  // und der aktuelle Wert numerisch ist. Sonst wird die Variable entfernt,
+  // sodass der CSS-Fallback (statische color-Option) greift. Der Uebergang
+  // wird per CSS-Transition auf .value, .spark-line, .spark-area, .spark-dot
+  // und .spark-bar weich animiert.
+  _applyDynamicColor() {
+    const card = this.shadowRoot?.querySelector("ha-card");
+    if (!card) return;
+    const c = this._config;
+    if (!c?.dynamic_color) {
+      card.style.removeProperty("--fudash-dyn-color");
+      return;
+    }
+    const color = FuDash.dynamicGradientColor({
+      value: this._currentValue,
+      low: c.dynamic_low_value,
+      mid: c.dynamic_mid_value,
+      high: c.dynamic_high_value,
+      cLow: c.dynamic_low_color,
+      cMid: c.dynamic_mid_color,
+      cHigh: c.dynamic_high_color,
+    });
+    if (color) {
+      card.style.setProperty("--fudash-dyn-color", color);
+    } else {
+      card.style.removeProperty("--fudash-dyn-color");
+    }
   }
 
   _numberFormatOpts(sample) {

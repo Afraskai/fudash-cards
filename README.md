@@ -57,7 +57,7 @@ is published.
    all four cards appear in the picker.
 
 > After every update of the JS file, bump the cache buster on the
-> resource URL (e.g. `/local/fudash-cards.js?v=0.11.1`) or clear the
+> resource URL (e.g. `/local/fudash-cards.js?v=0.12.0`) or clear the
 > browser cache.
 
 ## Quick start: energy dashboard
@@ -186,11 +186,45 @@ to the total / percentage distribution.
 | `bar_width`        | number  | `3`     | Bar width in px (1–20). Bar mode only. |
 | `bar_gap`          | number  | `1`     | Gap between bars in px (0–8). |
 | `refresh_interval` | number  | `120`   | Seconds between automatic re-fetches. |
+| `dynamic_color`    | bool    | `false` | Color the main value and sparkline dynamically based on the current value (3-stop gradient). |
+| `dynamic_low_value` / `dynamic_mid_value` / `dynamic_high_value` | number | `18` / `21` / `25` | Value stops for the gradient (must be ascending). |
+| `dynamic_low_color` / `dynamic_mid_color` / `dynamic_high_color` | string | `blue` / `primary` / `red` | Colors at each stop. Same preset names as `color`. |
 
 The delta compares the **current value** with the **first data point**
 in the period. From 24 h onward long-term statistics are used
 automatically. Min/avg/max are computed over all data points in the
 period including the current live value.
+
+With `dynamic_color: true` the main value and sparkline are colored by
+a smooth `low → mid → high` gradient (interpolated via `color-mix` in
+OKLCH). Values outside `[low, high]` are clamped to the boundary color.
+Examples:
+
+```yaml
+# Room temperature: cool = blue, comfortable = primary, warm = red
+type: custom:fudash-stat-card
+entity: sensor.living_room_temperature
+dynamic_color: true
+dynamic_low_value: 18
+dynamic_mid_value: 21
+dynamic_high_value: 25
+dynamic_low_color: blue
+dynamic_mid_color: primary
+dynamic_high_color: red
+```
+
+```yaml
+# House power draw: low = green, medium = amber, high = red
+type: custom:fudash-stat-card
+entity: sensor.house_power
+dynamic_color: true
+dynamic_low_value: 0
+dynamic_mid_value: 2000
+dynamic_high_value: 5000
+dynamic_low_color: green
+dynamic_mid_color: amber
+dynamic_high_color: red
+```
 
 ## Interactions (tap / hold / double-tap)
 

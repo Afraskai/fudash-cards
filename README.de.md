@@ -61,7 +61,7 @@ neuer `v*`-Tag im Repo veröffentlicht wird.
    suchen – alle vier Karten tauchen im Picker auf.
 
 > Nach jedem Update der JS-Datei das Cache-Busting in der Ressource
-> anpassen (z. B. `/local/fudash-cards.js?v=0.11.1`) oder Cache leeren.
+> anpassen (z. B. `/local/fudash-cards.js?v=0.12.0`) oder Cache leeren.
 
 ## Schnellstart: Energie-Dashboard
 
@@ -189,11 +189,45 @@ Summe/Prozentverteilung.
 | `bar_width`        | Zahl    | `3`     | Balkenbreite in px (1–20). Nur im Balken-Modus. |
 | `bar_gap`          | Zahl    | `1`     | Lücke zwischen Balken in px (0–8). |
 | `refresh_interval` | Zahl    | `120`   | Sekunden zwischen automatischen Re-Fetches. |
+| `dynamic_color`    | Bool    | `false` | Hauptzahl und Sparkline abhängig vom aktuellen Wert dynamisch einfärben (3-Stopp-Gradient). |
+| `dynamic_low_value` / `dynamic_mid_value` / `dynamic_high_value` | Zahl | `18` / `21` / `25` | Werte-Stopps für den Gradient (aufsteigend). |
+| `dynamic_low_color` / `dynamic_mid_color` / `dynamic_high_color` | String | `blue` / `primary` / `red` | Farbe pro Stopp. Dieselben Preset-Namen wie bei `color`. |
 
 Das Delta vergleicht den **aktuellen Wert** mit dem **ersten Datenpunkt**
 im Zeitraum. Ab 24 h werden automatisch Long-Term-Statistics verwendet.
 Min/Ø/Max werden über alle Datenpunkte des Zeitraums inkl. aktuellem
 Live-Wert berechnet.
+
+Mit `dynamic_color: true` werden Hauptzahl und Sparkline über einen
+weichen `low → mid → high`-Gradient eingefärbt (Interpolation via
+`color-mix` in OKLCH). Werte außerhalb `[low, high]` werden auf die
+Randfarbe geklemmt. Beispiele:
+
+```yaml
+# Raumtemperatur: kühl = blau, angenehm = primary, warm = rot
+type: custom:fudash-stat-card
+entity: sensor.wohnzimmer_temperatur
+dynamic_color: true
+dynamic_low_value: 18
+dynamic_mid_value: 21
+dynamic_high_value: 25
+dynamic_low_color: blue
+dynamic_mid_color: primary
+dynamic_high_color: red
+```
+
+```yaml
+# Hausverbrauch: niedrig = grün, mittel = amber, hoch = rot
+type: custom:fudash-stat-card
+entity: sensor.hausverbrauch
+dynamic_color: true
+dynamic_low_value: 0
+dynamic_mid_value: 2000
+dynamic_high_value: 5000
+dynamic_low_color: green
+dynamic_mid_color: amber
+dynamic_high_color: red
+```
 
 ## Interaktionen (tap / hold / double-tap)
 
