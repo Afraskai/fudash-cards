@@ -57,7 +57,7 @@ is published.
    all four cards appear in the picker.
 
 > After every update of the JS file, bump the cache buster on the
-> resource URL (e.g. `/local/fudash-cards.js?v=0.11.0`) or clear the
+> resource URL (e.g. `/local/fudash-cards.js?v=0.11.1`) or clear the
 > browser cache.
 
 ## Quick start: energy dashboard

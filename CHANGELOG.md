@@ -4,6 +4,15 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.11.1] – 2026-05-03
+
+### Behoben
+- **Stat-Card**: Bei Zeitraeumen > 24 h wurden fuer Sensoren
+  ohne `state_class` (also ohne Long-Term-Statistics) keine Daten mehr
+  angezeigt (Sparkline, Delta, Min/Ø/Max leer). `FuDash.fetchSeries`
+  faellt jetzt automatisch auf die Roh-Historie zurueck, wenn der
+  Statistics-Endpoint ein leeres Ergebnis liefert.
+
 ## [0.11.0] – 2026-04-27
 
 ### Geändert (Breaking-ish UX)

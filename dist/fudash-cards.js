@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-04-27T07:18:07Z
+ *  Built: 2026-05-03T11:25:48Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -12,7 +12,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.11.0";
+FuDash.VERSION = "0.11.1";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {
@@ -546,10 +546,25 @@ FuDash.fetchSeries = async (hass, entityId, hours) => {
 
   const startIso = new Date(start).toISOString();
   const endIso = new Date(now).toISOString();
-  const promise = useStats
-    ? fetchStatistics(hass, entityId, startIso, endIso, bucket)
+  // Bei langen Zeitraeumen zuerst Long-Term-Statistics versuchen (schonender
+  // fuer die DB). Sensoren ohne state_class haben aber keine LTS - in dem
+  // Fall liefert der Call ein leeres Ergebnis. Dann auf Roh-Historie
+  // zurueckfallen, damit solche Entitaeten auch > 24 h funktionieren.
+  const loader = useStats
+    ? (async () => {
+        const stats = await fetchStatistics(
+          hass,
+          entityId,
+          startIso,
+          endIso,
+          bucket
+        );
+        if (stats.length) return stats;
+        return fetchRawHistory(hass, entityId, startIso, endIso);
+      })()
     : fetchRawHistory(hass, entityId, startIso, endIso);
-  cache.set(key, { expires: now + CACHE_TTL_MS, promise });
+  cache.set(key, { expires: now + CACHE_TTL_MS, promise: loader });
+  const promise = loader;
   try {
     return await promise;
   } catch (err) {

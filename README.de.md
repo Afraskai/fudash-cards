@@ -61,7 +61,7 @@ neuer `v*`-Tag im Repo veröffentlicht wird.
    suchen – alle vier Karten tauchen im Picker auf.
 
 > Nach jedem Update der JS-Datei das Cache-Busting in der Ressource
-> anpassen (z. B. `/local/fudash-cards.js?v=0.11.0`) oder Cache leeren.
+> anpassen (z. B. `/local/fudash-cards.js?v=0.11.1`) oder Cache leeren.
 
 ## Schnellstart: Energie-Dashboard
 
