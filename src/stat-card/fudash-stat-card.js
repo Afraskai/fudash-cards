@@ -579,7 +579,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       const cx = xScale(p.t);
       const y = allValuesZero ? baseline : yScale(p.v);
       const top = Math.min(y, baseline - 1);
-      const h = allValuesZero ? 0 : Math.max(1, baseline - top);
+      const h = allValuesZero ? 1 : Math.max(1, baseline - top);
       const x = cx - effBarW / 2;
       return `<rect class="spark-bar" x="${x.toFixed(2)}" y="${top.toFixed(
         2

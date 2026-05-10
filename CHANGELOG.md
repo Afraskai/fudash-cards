@@ -4,6 +4,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.12.2] – 2026-05-10
+
+### Geändert
+- **Stat-Card**: Balken-Sparklines mit ausschließlich `0`-Werten zeigen
+  wieder eine minimale 1px-Linie statt komplett zu verschwinden.
+
 ## [0.12.1] – 2026-05-10
 
 ### Behoben

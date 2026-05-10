@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-05-10T13:23:25Z
+ *  Built: 2026-05-10T13:26:54Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -12,7 +12,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.12.1";
+FuDash.VERSION = "0.12.2";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {
@@ -2638,7 +2638,7 @@ FuDash.StatCard = class FudashStatCard extends FuDash.BaseCard {
       const cx = xScale(p.t);
       const y = allValuesZero ? baseline : yScale(p.v);
       const top = Math.min(y, baseline - 1);
-      const h = allValuesZero ? 0 : Math.max(1, baseline - top);
+      const h = allValuesZero ? 1 : Math.max(1, baseline - top);
       const x = cx - effBarW / 2;
       return `<rect class="spark-bar" x="${x.toFixed(2)}" y="${top.toFixed(
         2
