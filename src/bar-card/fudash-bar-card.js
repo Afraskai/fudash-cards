@@ -121,6 +121,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       ? Number(this._config.gap)
       : 2;
     const animate = this._config.animate !== false;
+    const glass = this._config.glass === true;
     return `
       .rows { display: flex; flex-direction: column; gap: 12px; }
       .row {
@@ -192,6 +193,37 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       }
       .row.unavailable .value { color: var(--fudash-muted); }
       .row.unavailable .seg { background: var(--fudash-track); box-shadow: none; }
+      ${glass ? this._glassStyles() : ""}
+    `;
+  }
+
+  _glassStyles() {
+    return `
+      .seg {
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, white 12%, var(--fudash-track)) 0%,
+          var(--fudash-track) 60%,
+          color-mix(in srgb, black 6%, var(--fudash-track)) 100%
+        );
+        box-shadow: inset 0 1px 0 color-mix(in srgb, white 15%, transparent);
+      }
+      .seg.on {
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, white 28%, var(--seg-color, var(--fudash-success))) 0%,
+          var(--seg-color, var(--fudash-success)) 55%,
+          color-mix(in srgb, black 10%, var(--seg-color, var(--fudash-success))) 100%
+        );
+        box-shadow:
+          inset 0 1px 0 color-mix(in srgb, white 40%, transparent),
+          inset 0 -1px 0 color-mix(in srgb, black 20%, transparent),
+          0 0 6px color-mix(in srgb, var(--seg-color, var(--fudash-success)) 35%, transparent);
+      }
+      .row.unavailable .seg {
+        background: var(--fudash-track);
+        box-shadow: none;
+      }
     `;
   }
 

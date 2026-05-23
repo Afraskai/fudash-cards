@@ -44,6 +44,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
         gap: "Gap between segments (px)",
         height: "Bar height (px)",
         animate: "Animate value changes",
+        glass: "Glas-Effekt",
         value_color: "Default color (all bars)",
         entities: "Entities (YAML list)",
         ...FuDash.ACTION_LABELS,
@@ -80,6 +81,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
             selector: { number: { min: 12, max: 64, step: 1, mode: "slider" } },
           },
           { name: "animate", default: true, selector: { boolean: {} } },
+          { name: "glass", default: false, selector: { boolean: {} } },
         ],
       },
       {
