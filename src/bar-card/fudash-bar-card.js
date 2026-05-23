@@ -202,23 +202,23 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       .seg {
         background: linear-gradient(
           180deg,
-          color-mix(in srgb, white 12%, var(--fudash-track)) 0%,
+          color-mix(in oklch, white 12%, var(--fudash-track)) 0%,
           var(--fudash-track) 60%,
-          color-mix(in srgb, black 6%, var(--fudash-track)) 100%
+          color-mix(in oklch, black 6%, var(--fudash-track)) 100%
         );
-        box-shadow: inset 0 1px 0 color-mix(in srgb, white 15%, transparent);
+        box-shadow: inset 0 1px 0 color-mix(in oklch, white 15%, transparent);
       }
       .seg.on {
         background: linear-gradient(
           180deg,
-          color-mix(in srgb, white 28%, var(--seg-color, var(--fudash-success))) 0%,
+          color-mix(in oklch, white 28%, var(--seg-color, var(--fudash-success))) 0%,
           var(--seg-color, var(--fudash-success)) 55%,
-          color-mix(in srgb, black 10%, var(--seg-color, var(--fudash-success))) 100%
+          color-mix(in oklch, black 10%, var(--seg-color, var(--fudash-success))) 100%
         );
         box-shadow:
-          inset 0 1px 0 color-mix(in srgb, white 40%, transparent),
-          inset 0 -1px 0 color-mix(in srgb, black 20%, transparent),
-          0 0 6px color-mix(in srgb, var(--seg-color, var(--fudash-success)) 35%, transparent);
+          inset 0 1px 0 color-mix(in oklch, white 40%, transparent),
+          inset 0 -1px 0 color-mix(in oklch, black 20%, transparent),
+          0 0 6px color-mix(in oklch, var(--seg-color, var(--fudash-success)) 35%, transparent);
       }
       .row.unavailable .seg {
         background: var(--fudash-track);
