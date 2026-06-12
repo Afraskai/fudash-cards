@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-06-12T08:40:02Z
+ *  Built: 2026-06-12T08:43:42Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -782,6 +782,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
         min-width: 0;
       }
       .row-icon {
+        grid-column: 1;
         --mdc-icon-size: ${iconSize}px;
         display: flex;
         align-items: center;
@@ -789,6 +790,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
         margin-right: 12px;
       }
       .bar {
+        grid-column: 2;
         display: flex;
         gap: ${gap}px;
         height: ${height}px;
@@ -817,6 +819,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
         text-align: right;
         line-height: 1;
         margin-left: 12px;
+        grid-column: 3;
       }
       .value .unit {
         font-size: 0.65em;

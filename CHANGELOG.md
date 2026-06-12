@@ -29,6 +29,10 @@ und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
   `display: none` + `margin-right: 12px` auf `.row-icon` statt Grid-Gap.
 - **Bar-Card · Icon-Größe erhöht**: Faktor 0.75 → 1.0 der Balkenhöhe, Minimum
   14 → 18 px (bei Höhe 28 px sind Icons jetzt 28 statt 21 px groß).
+- **Bar-Card · Balken gestaucht bei ausgeblendeten Icons**: `display: none`
+  entfernte das Icon aus dem Grid-Flow, Auto-Placement schob den Balken in
+  die `auto`-Spalte. Explizite `grid-column`-Zuweisungen auf allen drei
+  Grid-Kindern fixen das (`.row-icon → 1`, `.bar → 2`, `.value → 3`).
 
 ## [0.15.0] – 2026-06-12
 
