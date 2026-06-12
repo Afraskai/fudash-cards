@@ -287,9 +287,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       const valEl = row.querySelector(".value");
       const bar = row.querySelector(".bar");
 
-      const showNamesGlobal = this._config.show_names !== false;
-      const showNameEntity = entry.show_name !== false;
-      const shouldShowName = showNamesGlobal && showNameEntity;
+      const shouldShowName = entry.show_name ?? (this._config.show_names !== false);
 
       if (shouldShowName) {
         nameEl.textContent =
@@ -300,8 +298,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
 
       const iconEl = row.querySelector(".row-icon");
       if (iconEl) {
-        const showIconEntity = entry.show_icon !== false;
-        const shouldShowIcon = showIconEntity;
+        const shouldShowIcon = entry.show_icon ?? (this._config.show_icons === true);
         const iconName = entry.icon || state?.attributes?.icon || "";
         
         if (shouldShowIcon && iconName) {

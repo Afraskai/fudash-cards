@@ -9,16 +9,15 @@ und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 ### Hinzugefügt
 - **Bar-Card · Per-Entity `show_name` / `show_icon`**: Neue YAML-Felder
   `show_name` und `show_icon` pro Entity-Eintrag ermöglichen
-  Feinsteuerung, welche Zeilen Namen/Icons anzeigen. Wirken nur, wenn
-  der entsprechende globale Schalter (`show_names` / `show_icons`)
-  aktiviert ist (AND-Logik).
+  Feinsteuerung, welche Zeilen Namen/Icons anzeigen. Der Entity-Parameter
+  überschreibt den globalen Schalter (`show_names` / `show_icons`).
 - **Bar-Card · Globaler `show_names`-Schalter**: Neues Karten-Flag
-  `show_names` (default `true`) als Master-Switch für alle Namen. Bei
-  `show_names: false` werden alle Namen ausgeblendet, unabhängig von
-  per-Entity-Einstellungen.
-- AND-Logik: Name erscheint nur wenn `show_names: true` (global) **und**
-  `entry.show_name !== false`. Icon nur wenn `show_icons: true` **und**
-  `entry.show_icon !== false`.
+  `show_names` (default `true`) als Fallback für alle Namen. Bei
+  `show_names: false` werden standardmäßig alle Namen ausgeblendet.
+- **Bar-Card · Globaler `show_icons`-Schalter**: Neues Karten-Flag
+  `show_icons` (default `false`) als Fallback für alle Icons.
+- Entity-Override-Logik: `entry.show_name` / `entry.show_icon` überschreiben
+  den globalen Wert, wenn explizit gesetzt. Sonst gilt der globale Wert.
 
 ## [0.15.0] – 2026-06-12
 
