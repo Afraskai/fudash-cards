@@ -108,7 +108,8 @@ More examples: [`examples/lovelace-examples.yaml`](examples/lovelace-examples.ya
 | `height`     | number (px) | `28`   | Bar height. |
 | `animate`    | bool      | `true`   | Smooth fade-in / color changes. |
 | `glass`      | bool      | `false`  | Glass-effect shading on segments. |
-| `show_icons` | bool      | `false`  | Show an icon to the left of each bar (see `icon` on entity entries). |
+| `show_names` | bool      | `true`   | Global switch: show entity names above bars. Per-entity override: `show_name`. |
+| `show_icons` | bool      | `false`  | Global switch: show icons left of bars. Per-entity override: `show_icon`. |
 | `value_color`| string    | `auto`   | `auto` \| `success` \| `warn` \| `crit` \| `primary` \| any CSS color. |
 
 Entity entry (`entities[].*`):
@@ -124,6 +125,8 @@ Entity entry (`entities[].*`):
 | `color` | string | no       | Same as `value_color` but per entity. |
 | `unit`  | string | no       | Overrides the entity's unit. |
 | `icon`  | string | no       | MDI icon shown left of the bar when `show_icons: true` (e.g. `mdi:solar-power`). Falls back to the entity's HA icon. |
+| `show_name` | bool | no | Show name for this entity (default `true`). Only works if global `show_names: true`. |
+| `show_icon` | bool | no | Show icon for this entity (default `true`). Only works if global `show_icons: true`. |
 
 ### `fudash-gauge-card`
 

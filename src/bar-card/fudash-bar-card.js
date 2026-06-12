@@ -287,13 +287,24 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       const valEl = row.querySelector(".value");
       const bar = row.querySelector(".bar");
 
-      nameEl.textContent =
-        entry.name || state?.attributes?.friendly_name || entry.entity || "—";
+      const showNamesGlobal = this._config.show_names !== false;
+      const showNameEntity = entry.show_name !== false;
+      const shouldShowName = showNamesGlobal && showNameEntity;
+
+      if (shouldShowName) {
+        nameEl.textContent =
+          entry.name || state?.attributes?.friendly_name || entry.entity || "—";
+      } else {
+        nameEl.textContent = "";
+      }
 
       const iconEl = row.querySelector(".row-icon");
       if (iconEl) {
+        const showIconEntity = entry.show_icon !== false;
+        const shouldShowIcon = showIconEntity;
         const iconName = entry.icon || state?.attributes?.icon || "";
-        if (iconName) {
+        
+        if (shouldShowIcon && iconName) {
           iconEl.setAttribute("icon", iconName);
           iconEl.style.visibility = "";
         } else {

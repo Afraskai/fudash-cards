@@ -45,6 +45,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
         height: "Bar height (px)",
         animate: "Animate value changes",
         glass: "Glas-Effekt",
+        show_names: "Show entity names",
         show_icons: "Show icons",
         value_color: "Default color (all bars)",
         entities: "Entities (YAML list)",
@@ -52,8 +53,12 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
+        show_names:
+          "Global switch. Per-entity override: show_name (YAML only).",
+        show_icons:
+          "Global switch. Per-entity override: show_icon (YAML only).",
         entities:
-          "Each entry: entity (required), name, max, warn, crit, color.",
+          "Each entry: entity (required), name, icon, show_name, show_icon, max, warn, crit, color.",
         value_color:
           "Used when an entity entry has no own 'color' option.",
       }[s.name]);
@@ -83,6 +88,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
           },
           { name: "animate", default: true, selector: { boolean: {} } },
           { name: "glass", default: false, selector: { boolean: {} } },
+          { name: "show_names", default: true, selector: { boolean: {} } },
           { name: "show_icons", default: false, selector: { boolean: {} } },
         ],
       },

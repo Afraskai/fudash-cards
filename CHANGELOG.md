@@ -4,6 +4,22 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.16.0] – 2026-06-12
+
+### Hinzugefügt
+- **Bar-Card · Per-Entity `show_name` / `show_icon`**: Neue YAML-Felder
+  `show_name` und `show_icon` pro Entity-Eintrag ermöglichen
+  Feinsteuerung, welche Zeilen Namen/Icons anzeigen. Wirken nur, wenn
+  der entsprechende globale Schalter (`show_names` / `show_icons`)
+  aktiviert ist (AND-Logik).
+- **Bar-Card · Globaler `show_names`-Schalter**: Neues Karten-Flag
+  `show_names` (default `true`) als Master-Switch für alle Namen. Bei
+  `show_names: false` werden alle Namen ausgeblendet, unabhängig von
+  per-Entity-Einstellungen.
+- AND-Logik: Name erscheint nur wenn `show_names: true` (global) **und**
+  `entry.show_name !== false`. Icon nur wenn `show_icons: true` **und**
+  `entry.show_icon !== false`.
+
 ## [0.15.0] – 2026-06-12
 
 ### Hinzugefügt

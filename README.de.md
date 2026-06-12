@@ -111,7 +111,8 @@ Mehr Beispiele: [`examples/lovelace-examples.yaml`](examples/lovelace-examples.y
 | `height`     | Zahl (px) | `28`     | Balkenhöhe. |
 | `animate`    | Bool      | `true`   | Sanftes Einblenden / Farbwechsel. |
 | `glass`      | Bool      | `false`  | Glas-Effekt auf den Segmenten. |
-| `show_icons` | Bool      | `false`  | Icon links neben jedem Balken einblenden (siehe `icon` bei Entity-Einträgen). |
+| `show_names` | Bool      | `true`   | Globaler Schalter: Namen über Balken anzeigen. Per-Entity-Override: `show_name`. |
+| `show_icons` | Bool      | `false`  | Globaler Schalter: Icons links von Balken anzeigen. Per-Entity-Override: `show_icon`. |
 | `value_color`| String    | `auto`   | `auto` \| `success` \| `warn` \| `crit` \| `primary` \| beliebige CSS-Farbe. |
 
 Entity-Eintrag (`entities[].*`):
@@ -127,6 +128,8 @@ Entity-Eintrag (`entities[].*`):
 | `color` | String | nein    | Wie `value_color`, aber pro Entity. |
 | `unit`  | String | nein    | Überschreibt die Einheit der Entity. |
 | `icon`  | String | nein    | MDI-Icon links vom Balken, wenn `show_icons: true` (z. B. `mdi:solar-power`). Fallback auf das in HA hinterlegte Entity-Icon. |
+| `show_name` | Bool | nein | Name dieser Entity anzeigen (default `true`). Wirkt nur wenn global `show_names: true`. |
+| `show_icon` | Bool | nein | Icon dieser Entity anzeigen (default `true`). Wirkt nur wenn global `show_icons: true`. |
 
 ### `fudash-gauge-card`
 

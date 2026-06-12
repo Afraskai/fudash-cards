@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-06-12T07:44:57Z
+ *  Built: 2026-06-12T08:14:21Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -12,7 +12,7 @@
 // Wird als erstes in dist/fudash-cards.js konkateniert.
 
 const FuDash = (window.FuDash = window.FuDash || {});
-FuDash.VERSION = "0.15.0";
+FuDash.VERSION = "0.16.0";
 
 // Custom-Event-Helfer (bubbles + composed, damit HA-Editor das mitbekommt)
 FuDash.fireEvent = (node, type, detail = {}) => {
@@ -911,13 +911,24 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       const valEl = row.querySelector(".value");
       const bar = row.querySelector(".bar");
 
-      nameEl.textContent =
-        entry.name || state?.attributes?.friendly_name || entry.entity || "—";
+      const showNamesGlobal = this._config.show_names !== false;
+      const showNameEntity = entry.show_name !== false;
+      const shouldShowName = showNamesGlobal && showNameEntity;
+
+      if (shouldShowName) {
+        nameEl.textContent =
+          entry.name || state?.attributes?.friendly_name || entry.entity || "—";
+      } else {
+        nameEl.textContent = "";
+      }
 
       const iconEl = row.querySelector(".row-icon");
       if (iconEl) {
+        const showIconEntity = entry.show_icon !== false;
+        const shouldShowIcon = showIconEntity;
         const iconName = entry.icon || state?.attributes?.icon || "";
-        if (iconName) {
+        
+        if (shouldShowIcon && iconName) {
           iconEl.setAttribute("icon", iconName);
           iconEl.style.visibility = "";
         } else {
@@ -1032,6 +1043,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
         height: "Bar height (px)",
         animate: "Animate value changes",
         glass: "Glas-Effekt",
+        show_names: "Show entity names",
         show_icons: "Show icons",
         value_color: "Default color (all bars)",
         entities: "Entities (YAML list)",
@@ -1039,8 +1051,12 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
       }[s.name] || s.name);
     this._form.computeHelper = (s) =>
       ({
+        show_names:
+          "Global switch. Per-entity override: show_name (YAML only).",
+        show_icons:
+          "Global switch. Per-entity override: show_icon (YAML only).",
         entities:
-          "Each entry: entity (required), name, max, warn, crit, color.",
+          "Each entry: entity (required), name, icon, show_name, show_icon, max, warn, crit, color.",
         value_color:
           "Used when an entity entry has no own 'color' option.",
       }[s.name]);
@@ -1070,6 +1086,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
           },
           { name: "animate", default: true, selector: { boolean: {} } },
           { name: "glass", default: false, selector: { boolean: {} } },
+          { name: "show_names", default: true, selector: { boolean: {} } },
           { name: "show_icons", default: false, selector: { boolean: {} } },
         ],
       },
