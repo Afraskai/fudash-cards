@@ -20,19 +20,9 @@ und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
   den globalen Wert, wenn explizit gesetzt. Sonst gilt der globale Wert.
 
 ### Behoben
-- **Bar-Card · Icon-Element fehlte bei `show_icons: false`**: Das `<ha-icon>`-Element
-  wurde gar nicht ins DOM gerendert, wenn global `show_icons: false` war – dadurch
-  konnte `entry.show_icon: true` kein Icon anzeigen. Icon wird jetzt immer gerendert,
-  Sichtbarkeit per `display: none` gesteuert.
-- **Bar-Card · Versatz bei ausgeblendeten Icons**: `visibility: hidden` reservierte
-  den Platz, `gap` im CSS-Grid verschob den Balken. Umstellung auf
-  `display: none` + `margin-right: 12px` auf `.row-icon` statt Grid-Gap.
-- **Bar-Card · Icon-Größe erhöht**: Faktor 0.75 → 1.0 der Balkenhöhe, Minimum
-  14 → 18 px (bei Höhe 28 px sind Icons jetzt 28 statt 21 px groß).
-- **Bar-Card · Balken gestaucht bei ausgeblendeten Icons**: `display: none`
-  entfernte das Icon aus dem Grid-Flow, Auto-Placement schob den Balken in
-  die `auto`-Spalte. Explizite `grid-column`-Zuweisungen auf allen drei
-  Grid-Kindern fixen das (`.row-icon → 1`, `.bar → 2`, `.value → 3`).
+- **Bar-Card · `entry.show_icon: true` überschreibt jetzt globales `show_icons: false`**.
+- **Bar-Card · Icons sind größer** (Faktor 0.75 → 1.0 der Balkenhöhe, min. 18 px).
+- **Bar-Card · Balken-Layout stabil** bei ausgeblendeten Icons (kein Verzug mehr).
 
 ## [0.15.0] – 2026-06-12
 
