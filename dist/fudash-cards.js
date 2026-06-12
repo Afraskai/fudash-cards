@@ -1,6 +1,6 @@
 /*! fudash-cards - Home Assistant Custom Cards
  *  License: MIT
- *  Built: 2026-06-12T08:29:54Z
+ *  Built: 2026-06-12T08:40:02Z
  *  Source: https://github.com/ (siehe README)
  */
 (function () {
@@ -691,14 +691,13 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
     const title = c.title
       ? `<div class="fudash-title">${FuDash.escapeHtml(c.title)}</div>`
       : "";
-    const showIcons = c.show_icons === true;
     const rows = c.entities
       .map(
         (_, i) => `
       <div class="row" data-idx="${i}" tabindex="0" role="button" aria-label="Show history">
         <div class="head"><span class="name"></span></div>
         <div class="body">
-          ${showIcons ? '<ha-icon class="row-icon"></ha-icon>' : ""}
+          <ha-icon class="row-icon"></ha-icon>
           <div class="bar" role="meter"></div>
           <span class="value"></span>
         </div>
@@ -748,8 +747,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       : 2;
     const animate = this._config.animate !== false;
     const glass = this._config.glass === true;
-    const showIcons = this._config.show_icons === true;
-    const iconSize = Math.max(14, Math.min(48, Math.round(height * 0.75)));
+    const iconSize = Math.max(18, Math.min(48, Math.round(height * 1.0)));
     return `
       .rows { display: flex; flex-direction: column; gap: 12px; }
       .row {
@@ -779,9 +777,8 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       }
       .body {
         display: grid;
-        grid-template-columns: ${showIcons ? "auto " : ""}1fr auto;
+        grid-template-columns: auto 1fr auto;
         align-items: center;
-        gap: 12px;
         min-width: 0;
       }
       .row-icon {
@@ -789,6 +786,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
         display: flex;
         align-items: center;
         flex-shrink: 0;
+        margin-right: 12px;
       }
       .bar {
         display: flex;
@@ -818,6 +816,7 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
         min-width: 3.5em;
         text-align: right;
         line-height: 1;
+        margin-left: 12px;
       }
       .value .unit {
         font-size: 0.65em;
@@ -921,16 +920,14 @@ FuDash.BarCard = class FudashBarCard extends FuDash.BaseCard {
       }
 
       const iconEl = row.querySelector(".row-icon");
-      if (iconEl) {
-        const shouldShowIcon = entry.show_icon ?? (this._config.show_icons === true);
-        const iconName = entry.icon || state?.attributes?.icon || "";
-        
-        if (shouldShowIcon && iconName) {
-          iconEl.setAttribute("icon", iconName);
-          iconEl.style.visibility = "";
-        } else {
-          iconEl.style.visibility = "hidden";
-        }
+      const shouldShowIcon = entry.show_icon ?? (this._config.show_icons === true);
+      const iconName = entry.icon || state?.attributes?.icon || "";
+      
+      if (shouldShowIcon && iconName) {
+        iconEl.setAttribute("icon", iconName);
+        iconEl.style.display = "";
+      } else {
+        iconEl.style.display = "none";
       }
 
       if (FuDash.isUnavailable(state)) {

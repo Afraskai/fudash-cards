@@ -19,6 +19,17 @@ und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 - Entity-Override-Logik: `entry.show_name` / `entry.show_icon` überschreiben
   den globalen Wert, wenn explizit gesetzt. Sonst gilt der globale Wert.
 
+### Behoben
+- **Bar-Card · Icon-Element fehlte bei `show_icons: false`**: Das `<ha-icon>`-Element
+  wurde gar nicht ins DOM gerendert, wenn global `show_icons: false` war – dadurch
+  konnte `entry.show_icon: true` kein Icon anzeigen. Icon wird jetzt immer gerendert,
+  Sichtbarkeit per `display: none` gesteuert.
+- **Bar-Card · Versatz bei ausgeblendeten Icons**: `visibility: hidden` reservierte
+  den Platz, `gap` im CSS-Grid verschob den Balken. Umstellung auf
+  `display: none` + `margin-right: 12px` auf `.row-icon` statt Grid-Gap.
+- **Bar-Card · Icon-Größe erhöht**: Faktor 0.75 → 1.0 der Balkenhöhe, Minimum
+  14 → 18 px (bei Höhe 28 px sind Icons jetzt 28 statt 21 px groß).
+
 ## [0.15.0] – 2026-06-12
 
 ### Hinzugefügt
