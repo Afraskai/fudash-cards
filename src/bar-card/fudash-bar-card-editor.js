@@ -45,6 +45,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
         height: "Bar height (px)",
         animate: "Animate value changes",
         glass: "Glas-Effekt",
+        show_icons: "Show icons",
         value_color: "Default color (all bars)",
         entities: "Entities (YAML list)",
         ...FuDash.ACTION_LABELS,
@@ -82,6 +83,7 @@ FuDash.BarEditor = class FudashBarEditor extends HTMLElement {
           },
           { name: "animate", default: true, selector: { boolean: {} } },
           { name: "glass", default: false, selector: { boolean: {} } },
+          { name: "show_icons", default: false, selector: { boolean: {} } },
         ],
       },
       {

@@ -57,7 +57,7 @@ is published.
    all four cards appear in the picker.
 
 > After every update of the JS file, bump the cache buster on the
-> resource URL (e.g. `/local/fudash-cards.js?v=0.12.0`) or clear the
+> resource URL (e.g. `/local/fudash-cards.js?v=0.15.0`) or clear the
 > browser cache.
 
 ## Quick start: energy dashboard
@@ -107,6 +107,8 @@ More examples: [`examples/lovelace-examples.yaml`](examples/lovelace-examples.ya
 | `gap`        | number (px) | `2`    | Gap between segments. |
 | `height`     | number (px) | `28`   | Bar height. |
 | `animate`    | bool      | `true`   | Smooth fade-in / color changes. |
+| `glass`      | bool      | `false`  | Glass-effect shading on segments. |
+| `show_icons` | bool      | `false`  | Show an icon to the left of each bar (see `icon` on entity entries). |
 | `value_color`| string    | `auto`   | `auto` \| `success` \| `warn` \| `crit` \| `primary` \| any CSS color. |
 
 Entity entry (`entities[].*`):
@@ -121,6 +123,7 @@ Entity entry (`entities[].*`):
 | `crit`  | number | no       | Segments turn red above this value. |
 | `color` | string | no       | Same as `value_color` but per entity. |
 | `unit`  | string | no       | Overrides the entity's unit. |
+| `icon`  | string | no       | MDI icon shown left of the bar when `show_icons: true` (e.g. `mdi:solar-power`). Falls back to the entity's HA icon. |
 
 ### `fudash-gauge-card`
 

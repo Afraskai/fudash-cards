@@ -110,6 +110,8 @@ Mehr Beispiele: [`examples/lovelace-examples.yaml`](examples/lovelace-examples.y
 | `gap`        | Zahl (px) | `2`      | Abstand zwischen Segmenten. |
 | `height`     | Zahl (px) | `28`     | Balkenhöhe. |
 | `animate`    | Bool      | `true`   | Sanftes Einblenden / Farbwechsel. |
+| `glass`      | Bool      | `false`  | Glas-Effekt auf den Segmenten. |
+| `show_icons` | Bool      | `false`  | Icon links neben jedem Balken einblenden (siehe `icon` bei Entity-Einträgen). |
 | `value_color`| String    | `auto`   | `auto` \| `success` \| `warn` \| `crit` \| `primary` \| beliebige CSS-Farbe. |
 
 Entity-Eintrag (`entities[].*`):
@@ -124,6 +126,7 @@ Entity-Eintrag (`entities[].*`):
 | `crit`  | Zahl   | nein    | Ab diesem Wert Segmente rot. |
 | `color` | String | nein    | Wie `value_color`, aber pro Entity. |
 | `unit`  | String | nein    | Überschreibt die Einheit der Entity. |
+| `icon`  | String | nein    | MDI-Icon links vom Balken, wenn `show_icons: true` (z. B. `mdi:solar-power`). Fallback auf das in HA hinterlegte Entity-Icon. |
 
 ### `fudash-gauge-card`
 

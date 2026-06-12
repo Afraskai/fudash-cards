@@ -4,6 +4,21 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.15.0] – 2026-06-12
+
+### Hinzugefügt
+- **Bar-Card · Icons pro Entity**: Neues Karten-Flag `show_icons: true`
+  blendet links neben jedem Balken ein Icon ein. Das Icon wird aus dem
+  Entity-Eintrag (`icon: mdi:…`) gelesen; fehlt es dort, greift die
+  Karte auf das in Home Assistant hinterlegte Entity-Icon zurück
+  (`state.attributes.icon`). Ist kein Icon bekannt, bleibt der Platz
+  unsichtbar (Ausrichtung der Balken bleibt erhalten).
+- Icon-Größe skaliert proportional mit der Balkenhöhe (`height`-Option):
+  75 % der Balkenhöhe, begrenzt auf 14–48 px, damit es bei jeder Höhe
+  (12–64 px) harmonisch wirkt.
+- Icon-Farbe folgt der Segment-Farbe (warn/crit/custom) und wechselt
+  zusammen mit dem Balken.
+
 ## [0.12.2] – 2026-05-10
 
 ### Geändert
